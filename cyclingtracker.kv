@@ -1,0 +1,288 @@
+#:kivy 2.0
+
+<DashboardScreen>:
+    BoxLayout:
+        orientation: 'vertical'
+        padding: dp(16)
+        spacing: dp(12)
+
+        Label:
+            text: 'CyclingTracker'
+            font_size: sp(28)
+            bold: True
+            size_hint_y: None
+            height: dp(48)
+
+        # Permission status panel
+        BoxLayout:
+            orientation: 'vertical'
+            size_hint_y: None
+            height: dp(140)
+            spacing: dp(4)
+
+            Label:
+                text: 'Permissions & Status'
+                font_size: sp(16)
+                bold: True
+                size_hint_y: None
+                height: dp(28)
+
+            PermissionRow:
+                label_text: 'Location'
+                status: app.gps_status
+                granted: app.location_permission
+
+            PermissionRow:
+                label_text: 'Bluetooth'
+                status: app.ble_status
+                granted: app.ble_permission
+
+            PermissionRow:
+                label_text: 'Background Location'
+                status: 'Granted' if app.bg_location_permission else 'Not granted'
+                granted: app.bg_location_permission
+
+            PermissionRow:
+                label_text: 'Notifications'
+                status: 'Granted' if app.notification_permission else 'Not granted'
+                granted: app.notification_permission
+
+            PermissionRow:
+                label_text: 'Recorder'
+                status: app.service_status
+                granted: app.service_status != 'Stopped'
+
+        Widget:
+            size_hint_y: 1
+
+        # Navigation buttons
+        BoxLayout:
+            orientation: 'vertical'
+            size_hint_y: None
+            height: dp(248)
+            spacing: dp(8)
+
+            Button:
+                text: 'Start Ride'
+                font_size: sp(20)
+                on_release: app.switch_screen('ride')
+
+            Button:
+                text: 'Ride History'
+                font_size: sp(18)
+                on_release: app.switch_screen('history')
+
+            Button:
+                text: 'Settings'
+                font_size: sp(18)
+                on_release: app.switch_screen('settings')
+
+            Button:
+                text: 'Enable background location in Settings'
+                font_size: sp(14)
+                size_hint_y: None
+                height: dp(40) if app.location_permission and not app.bg_location_permission else 0
+                opacity: 1 if app.location_permission and not app.bg_location_permission else 0
+                disabled: not (app.location_permission and not app.bg_location_permission)
+                on_release: app.permission_manager.open_app_settings()
+
+            Button:
+                text: 'Re-request Permissions'
+                font_size: sp(14)
+                on_release: app.permission_manager.request_all()
+
+
+<PermissionRow@BoxLayout>:
+    label_text: ''
+    status: ''
+    granted: False
+    size_hint_y: None
+    height: dp(24)
+
+    Label:
+        text: root.label_text
+        size_hint_x: 0.4
+        halign: 'left'
+        text_size: self.size
+        valign: 'middle'
+
+    Label:
+        text: root.status
+        size_hint_x: 0.35
+        halign: 'center'
+        text_size: self.size
+        valign: 'middle'
+
+    Label:
+        text: '\u2705' if root.granted else '\u274c'
+        size_hint_x: 0.25
+        halign: 'center'
+        text_size: self.size
+        valign: 'middle'
+
+
+<RideScreen>:
+    BoxLayout:
+        orientation: 'vertical'
+        padding: dp(16)
+        spacing: dp(12)
+
+        Label:
+            text: 'Active Ride'
+            font_size: sp(24)
+            bold: True
+            size_hint_y: None
+            height: dp(40)
+
+        GridLayout:
+            cols: 2
+            spacing: dp(8)
+            size_hint_y: None
+            height: dp(200)
+
+            Label:
+                text: 'Elapsed'
+            Label:
+                id: elapsed_label
+                text: root.elapsed_text
+
+            Label:
+                text: 'Speed (km/h)'
+            Label:
+                id: speed_label
+                text: root.speed_text
+
+            Label:
+                text: 'Altitude (m)'
+            Label:
+                id: altitude_label
+                text: root.altitude_text
+
+            Label:
+                text: 'Distance (km)'
+            Label:
+                id: distance_label
+                text: root.distance_text
+
+            Label:
+                text: 'Heart Rate (bpm)'
+            Label:
+                id: hr_label
+                text: root.hr_text
+
+        Widget:
+            size_hint_y: 1
+
+        BoxLayout:
+            size_hint_y: None
+            height: dp(148)
+            spacing: dp(8)
+            orientation: 'vertical'
+
+            Button:
+                text: root.ride_button_text
+                font_size: sp(20)
+                on_release: root.toggle_ride()
+
+            Button:
+                text: 'Stop and save ride'
+                font_size: sp(16)
+                size_hint_y: None
+                height: dp(48) if root.stop_button_visible else 0
+                opacity: 1 if root.stop_button_visible else 0
+                disabled: not root.stop_button_visible
+                on_release: root.stop_ride()
+
+            Button:
+                text: 'Back to Dashboard'
+                font_size: sp(16)
+                on_release: app.switch_screen('dashboard')
+
+
+<HistoryScreen>:
+    BoxLayout:
+        orientation: 'vertical'
+        padding: dp(16)
+        spacing: dp(12)
+
+        Label:
+            text: 'Ride History'
+            font_size: sp(24)
+            bold: True
+            size_hint_y: None
+            height: dp(40)
+
+        ScrollView:
+            size_hint_y: 1
+            BoxLayout:
+                id: ride_list
+                orientation: 'vertical'
+                size_hint_y: None
+                height: self.minimum_height
+                spacing: dp(4)
+
+        Button:
+            text: 'Back to Dashboard'
+            font_size: sp(16)
+            size_hint_y: None
+            height: dp(48)
+            on_release: app.switch_screen('dashboard')
+
+
+<SettingsScreen>:
+    BoxLayout:
+        orientation: 'vertical'
+        padding: dp(16)
+        spacing: dp(12)
+
+        Label:
+            text: 'Settings'
+            font_size: sp(24)
+            bold: True
+            size_hint_y: None
+            height: dp(40)
+
+        Label:
+            text: 'Heart-rate monitor (standard BLE Heart Rate Service)'
+            font_size: sp(14)
+            size_hint_y: None
+            height: dp(40)
+
+        Label:
+            text: root.status_text
+            size_hint_y: None
+            height: dp(40)
+            halign: 'center'
+            text_size: self.size
+
+        BoxLayout:
+            size_hint_y: None
+            height: dp(48)
+            spacing: dp(8)
+
+            Button:
+                text: 'Scan for sensors'
+                on_release: root.scan()
+
+            Button:
+                text: 'Disconnect'
+                on_release: root.disconnect_device()
+
+        ScrollView:
+            size_hint_y: 1
+            BoxLayout:
+                id: device_list
+                orientation: 'vertical'
+                size_hint_y: None
+                height: self.minimum_height
+                spacing: dp(4)
+
+        Widget:
+            size_hint_y: 1
+
+        Button:
+            text: 'Back to Dashboard'
+            font_size: sp(16)
+            size_hint_y: None
+            height: dp(48)
+            on_release: app.switch_screen('dashboard')
