@@ -5,6 +5,8 @@ import sqlite3
 import stat
 import tempfile
 import unittest
+from concurrent.futures import ThreadPoolExecutor
+from threading import Barrier
 
 from cycling_tracker.models.database import Database, _default_db_path
 
@@ -113,6 +115,43 @@ class DatabaseTests(unittest.TestCase):
             other.close()
 
         self.assertEqual(self.db.get_ride(ride_id)['total_elapsed_s'], 42)
+
+    def test_concurrent_connections_persist_all_location_samples(self):
+        ride_id = self.db.create_ride()
+        connection_count = 3
+        samples_per_connection = 40
+        start_writes = Barrier(connection_count)
+
+        def insert_samples(connection_id):
+            connection = Database(self.db.db_path)
+            connection.open()
+            try:
+                start_writes.wait(timeout=5)
+                for sample_number in range(samples_per_connection):
+                    connection.insert_sample(
+                        ride_id,
+                        latitude=51.5 + connection_id / 1000,
+                        longitude=-0.12,
+                        timestamp=(
+                            f'2026-10-18T19:{connection_id:02d}:'
+                            f'{sample_number:02d}+00:00'
+                        ),
+                    )
+            finally:
+                connection.close()
+
+        with ThreadPoolExecutor(max_workers=connection_count) as executor:
+            tasks = [
+                executor.submit(insert_samples, connection_id)
+                for connection_id in range(connection_count)
+            ]
+            for task in tasks:
+                task.result(timeout=30)
+
+        self.assertEqual(
+            self.db.get_sample_count(ride_id),
+            connection_count * samples_per_connection,
+        )
 
     def test_upgrades_existing_schema_with_heart_rate_table(self):
         legacy_path = os.path.join(self.temp_dir.name, 'legacy.db')
