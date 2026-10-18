@@ -128,22 +128,31 @@ def publish_gpx(ride, samples, heart_rate_samples=(), app=None):
         ContentValues = autoclass('android.content.ContentValues')
         MediaStoreDownloads = autoclass('android.provider.MediaStore$Downloads')
         values = ContentValues()
-        values.put('display_name', filename)
+        values.put('_display_name', filename)
         values.put('mime_type', 'application/gpx+xml')
         values.put('relative_path', 'Download/CyclingTracker')
+        values.put('is_pending', 1)
         resolver = context.getContentResolver()
         uri = resolver.insert(MediaStoreDownloads.EXTERNAL_CONTENT_URI, values)
         if uri is None:
             raise OSError('Android could not create the GPX file in Downloads')
-        stream = resolver.openOutputStream(uri)
-        if stream is None:
-            raise OSError('Android could not open the exported GPX file')
         try:
-            for signed_chunk in _signed_byte_chunks(document):
-                stream.write(Array('b', signed_chunk))
-            stream.flush()
-        finally:
-            stream.close()
+            stream = resolver.openOutputStream(uri)
+            if stream is None:
+                raise OSError('Android could not open the exported GPX file')
+            try:
+                for signed_chunk in _signed_byte_chunks(document):
+                    stream.write(Array('b', signed_chunk))
+                stream.flush()
+            finally:
+                stream.close()
+            published_values = ContentValues()
+            published_values.put('is_pending', 0)
+            if resolver.update(uri, published_values, None, None) == 0:
+                raise OSError('Android could not publish the GPX file')
+        except Exception:
+            resolver.delete(uri, None, None)
+            raise
         return f'Download/CyclingTracker/{filename}'
 
     directory = context.getExternalFilesDir('Documents')

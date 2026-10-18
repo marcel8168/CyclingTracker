@@ -73,12 +73,15 @@ class GpxTests(unittest.TestCase):
         resolver.insert.return_value = 'content://downloads/ride-7'
         stream = resolver.openOutputStream.return_value
         values = mock.Mock()
+        published_values = mock.Mock()
+        content_values = mock.Mock(side_effect=[values, published_values])
+        resolver.update.return_value = 1
         downloads = types.SimpleNamespace(EXTERNAL_CONTENT_URI='downloads-uri')
         classes = {
             'org.kivy.android.PythonActivity':
                 types.SimpleNamespace(mActivity=context),
             'android.os.Build$VERSION': types.SimpleNamespace(SDK_INT=29),
-            'android.content.ContentValues': mock.Mock(return_value=values),
+            'android.content.ContentValues': content_values,
             'android.provider.MediaStore$Downloads': downloads,
         }
         java_module = types.ModuleType('jnius')
@@ -96,7 +99,11 @@ class GpxTests(unittest.TestCase):
         self.assertEqual(
             result, 'Download/CyclingTracker/CyclingTracker-ride-7.gpx'
         )
+        values.put.assert_any_call(
+            '_display_name', 'CyclingTracker-ride-7.gpx'
+        )
         values.put.assert_any_call('relative_path', 'Download/CyclingTracker')
+        values.put.assert_any_call('is_pending', 1)
         resolver.insert.assert_called_once_with('downloads-uri', values)
         resolver.openOutputStream.assert_called_once_with(
             'content://downloads/ride-7'
@@ -107,6 +114,106 @@ class GpxTests(unittest.TestCase):
         )
         stream.flush.assert_called_once()
         stream.close.assert_called_once()
+        resolver.update.assert_called_once()
+        published_values.put.assert_called_once_with('is_pending', 0)
+        resolver.delete.assert_not_called()
+
+    def test_android_export_deletes_entry_when_output_stream_cannot_be_opened(self):
+        context = mock.Mock()
+        resolver = context.getContentResolver.return_value
+        resolver.insert.return_value = 'content://downloads/ride-7'
+        resolver.openOutputStream.return_value = None
+        values = mock.Mock()
+        downloads = types.SimpleNamespace(EXTERNAL_CONTENT_URI='downloads-uri')
+        classes = {
+            'org.kivy.android.PythonActivity':
+                types.SimpleNamespace(mActivity=context),
+            'android.os.Build$VERSION': types.SimpleNamespace(SDK_INT=29),
+            'android.content.ContentValues': mock.Mock(return_value=values),
+            'android.provider.MediaStore$Downloads': downloads,
+        }
+        java_module = types.ModuleType('jnius')
+        java_module.Array = lambda _type, data: bytes(
+            byte if byte >= 0 else byte + 256 for byte in data
+        )
+        java_module.autoclass = lambda name: classes[name]
+
+        with (
+            mock.patch('kivy.utils.platform', 'android'),
+            mock.patch.dict(sys.modules, {'jnius': java_module}),
+            self.assertRaisesRegex(OSError, 'could not open'),
+        ):
+            publish_gpx(self.ride, self.samples)
+
+        resolver.delete.assert_called_once_with(
+            'content://downloads/ride-7', None, None
+        )
+        resolver.update.assert_not_called()
+
+    def test_android_export_deletes_entry_when_write_fails(self):
+        context = mock.Mock()
+        resolver = context.getContentResolver.return_value
+        resolver.insert.return_value = 'content://downloads/ride-7'
+        stream = resolver.openOutputStream.return_value
+        stream.write.side_effect = OSError('disk full')
+        values = mock.Mock()
+        downloads = types.SimpleNamespace(EXTERNAL_CONTENT_URI='downloads-uri')
+        classes = {
+            'org.kivy.android.PythonActivity':
+                types.SimpleNamespace(mActivity=context),
+            'android.os.Build$VERSION': types.SimpleNamespace(SDK_INT=29),
+            'android.content.ContentValues': mock.Mock(return_value=values),
+            'android.provider.MediaStore$Downloads': downloads,
+        }
+        java_module = types.ModuleType('jnius')
+        java_module.Array = lambda _type, data: bytes(
+            byte if byte >= 0 else byte + 256 for byte in data
+        )
+        java_module.autoclass = lambda name: classes[name]
+
+        with (
+            mock.patch('kivy.utils.platform', 'android'),
+            mock.patch.dict(sys.modules, {'jnius': java_module}),
+            self.assertRaisesRegex(OSError, 'disk full'),
+        ):
+            publish_gpx(self.ride, self.samples)
+
+        stream.close.assert_called_once()
+        resolver.delete.assert_called_once_with(
+            'content://downloads/ride-7', None, None
+        )
+        resolver.update.assert_not_called()
+
+    def test_android_export_deletes_entry_when_publish_update_fails(self):
+        context = mock.Mock()
+        resolver = context.getContentResolver.return_value
+        resolver.insert.return_value = 'content://downloads/ride-7'
+        resolver.update.return_value = 0
+        values = mock.Mock()
+        downloads = types.SimpleNamespace(EXTERNAL_CONTENT_URI='downloads-uri')
+        classes = {
+            'org.kivy.android.PythonActivity':
+                types.SimpleNamespace(mActivity=context),
+            'android.os.Build$VERSION': types.SimpleNamespace(SDK_INT=29),
+            'android.content.ContentValues': mock.Mock(return_value=values),
+            'android.provider.MediaStore$Downloads': downloads,
+        }
+        java_module = types.ModuleType('jnius')
+        java_module.Array = lambda _type, data: bytes(
+            byte if byte >= 0 else byte + 256 for byte in data
+        )
+        java_module.autoclass = lambda name: classes[name]
+
+        with (
+            mock.patch('kivy.utils.platform', 'android'),
+            mock.patch.dict(sys.modules, {'jnius': java_module}),
+            self.assertRaisesRegex(OSError, 'could not publish'),
+        ):
+            publish_gpx(self.ride, self.samples)
+
+        resolver.delete.assert_called_once_with(
+            'content://downloads/ride-7', None, None
+        )
 
 
 if __name__ == '__main__':
