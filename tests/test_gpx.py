@@ -3,7 +3,12 @@
 import unittest
 import xml.etree.ElementTree as ET
 
-from cycling_tracker.export.gpx import GPX_NS, GPXTPX_NS, build_gpx
+from cycling_tracker.export.gpx import (
+    GPX_NS,
+    GPXTPX_NS,
+    _signed_byte_chunks,
+    build_gpx,
+)
 
 
 class GpxTests(unittest.TestCase):
@@ -39,6 +44,12 @@ class GpxTests(unittest.TestCase):
             ).text,
             '142',
         )
+
+    def test_signed_byte_chunks_convert_utf8_document_without_materializing_list(self):
+        document = b'\x00\x7f\x80\xff'
+        chunks = list(_signed_byte_chunks(document, chunk_size=2))
+
+        self.assertEqual(chunks, [[0, 127], [-128, -1]])
 
     def test_rejects_invalid_coordinates(self):
         bad_samples = [dict(self.samples[0], latitude=91)]

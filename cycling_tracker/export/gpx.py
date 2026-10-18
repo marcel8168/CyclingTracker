@@ -103,6 +103,13 @@ def export_gpx(ride, samples, heart_rate_samples=(), path=None):
     return path
 
 
+def _signed_byte_chunks(document, chunk_size=64 * 1024):
+    """Yield signed-byte chunks for Android OutputStream writes."""
+    for offset in range(0, len(document), chunk_size):
+        chunk = document[offset:offset + chunk_size]
+        yield [byte if byte < 128 else byte - 256 for byte in chunk]
+
+
 def publish_gpx(ride, samples, heart_rate_samples=(), app=None):
     """Export GPX to Android Downloads where supported, otherwise app storage."""
     from kivy.utils import platform
@@ -132,9 +139,8 @@ def publish_gpx(ride, samples, heart_rate_samples=(), app=None):
         if stream is None:
             raise OSError('Android could not open the exported GPX file')
         try:
-            stream.write(Array('b', [
-                byte if byte < 128 else byte - 256 for byte in document
-            ]))
+            for signed_chunk in _signed_byte_chunks(document):
+                stream.write(Array('b', signed_chunk))
             stream.flush()
         finally:
             stream.close()
