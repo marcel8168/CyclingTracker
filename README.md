@@ -8,7 +8,7 @@ and packaged with [Buildozer](https://buildozer.readthedocs.io/).
 - GPS location, speed, altitude, distance, and elapsed-time recording
 - Standard Bluetooth LE Heart Rate Service support (service UUID `0x180D`)
 - Local SQLite ride and sensor data persistence
-- Android foreground location service for screen-off recording
+- Android foreground service for screen-off GPS and BLE heart-rate recording
 - Ride history with GPX 1.1 export and Garmin heart-rate track-point extensions
 - Offline operation; no accounts or cloud sync
 - Desktop GPS simulation and mocked permissions for UI development
@@ -60,16 +60,22 @@ buildozer android debug deploy run
 On Android 10+, grant background location for uninterrupted screen-off
 recording. Android 11+ may require enabling "Allow all the time" from the
 system app-permissions page after the initial prompt. During a ride, the app
-uses a foreground service and persistent notification. Validate screen-off
-behavior on a physical device; emulator tests cannot fully reproduce device
-power-management behavior or sensor interoperability.
+uses a foreground service and persistent notification. Select a heart-rate
+sensor before starting a ride; the foreground service owns its BLE connection
+and writes measurements alongside GPS data while recording. The service holds
+a partial wake lock until recording stops. Validate screen-off behavior on a
+physical device; emulator tests cannot fully reproduce device power-management
+behavior or sensor interoperability.
 
 ## Local data and export
 
-Rides and samples are stored in the app's private SQLite database. GPX exports
-are saved under `Downloads/CyclingTracker` on Android 10+, in the app's external
-`Documents` directory on earlier Android versions, and in the app's `exports`
-directory on desktop.
+On Android, rides and samples are stored in the app-private SQLite database.
+On POSIX desktops, the database directory is restricted to the current user
+(`0700`) and the database file to the current user (`0600`). These permissions
+limit access by other local accounts but do not encrypt the data at rest.
+GPX exports are saved under `Downloads/CyclingTracker` on Android 10+, in the
+app's external `Documents` directory on earlier Android versions, and in the
+app's `exports` directory on desktop.
 
 ## Project structure
 
@@ -98,8 +104,8 @@ CyclingTracker/
 
 The Android-specific BLE and foreground-service code must still be validated
 on an Android device. Host-side automated tests cover persistence, GPX
-serialization, and BLE measurement decoding, not device APIs or Android
-packaging.
+serialization, BLE measurement decoding, and service-side heart-rate
+persistence, not device APIs or Android packaging.
 
 ## License
 
