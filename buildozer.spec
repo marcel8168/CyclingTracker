@@ -69,8 +69,10 @@ android.enable_androidx = True
 android.entrypoint = org.kivy.android.PythonActivity
 
 # (list) Android services
-# Format: name:entrypoint_python_file[:foreground]
-android.services = Ride:cycling_tracker/services/ride_service.py:foreground:sticky:foregroundServiceType=location
+# Format: name:entrypoint_python_file[:foreground][:sticky]
+# The service attaches its own notification and calls startForeground(..., LOCATION)
+# so Android 8.0+ / 14+ accepts the lifecycle without crashing.
+android.services = Ride:cycling_tracker/services/ride_service.py:foreground:sticky
 
 # (str) Android logcat filters to use
 android.logcat_filters = *:S python:D

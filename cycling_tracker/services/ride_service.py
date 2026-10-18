@@ -78,6 +78,47 @@ def _record_location(db, ride_id, location, previous):
     return distance_total, lat, lon
 
 
+def _start_foreground_notification(service, Context):
+    """Attach an Android notification so the OS accepts the service."""
+    from jnius import autoclass
+
+    NotificationManager = autoclass('android.app.NotificationManager')
+    NotificationChannel = autoclass('android.app.NotificationChannel')
+    NotificationBuilder = autoclass('android.app.Notification$Builder')
+    Build = autoclass('android.os.Build$VERSION')
+    ServiceInfo = autoclass('android.content.pm.ServiceInfo')
+
+    channel_id = 'cycling_tracker_recorder'
+    channel_name = 'Ride Recording'
+    notification_manager = service.getSystemService(Context.NOTIFICATION_SERVICE)
+    notification_manager.createNotificationChannel(
+        NotificationChannel(
+            channel_id,
+            channel_name,
+            NotificationManager.IMPORTANCE_LOW,
+        )
+    )
+
+    builder = NotificationBuilder(service, channel_id)
+    builder.setContentTitle('CyclingTracker')
+    builder.setContentText('Recording ride in background…')
+    builder.setOngoing(True)
+    builder.setOnlyAlertOnce(True)
+    builder.setSmallIcon(service.getApplicationInfo().icon)
+    notification = builder.build()
+
+    if Build.SDK_INT >= 29:
+        service.startForeground(
+            1001,
+            notification,
+            ServiceInfo.FOREGROUND_SERVICE_TYPE_LOCATION,
+        )
+    else:
+        service.startForeground(1001, notification)
+
+    Logger.info('RideService: foreground notification started')
+
+
 def main():
     """Run until the active ride ends or Android stops this service."""
     if platform != 'android':
@@ -90,6 +131,7 @@ def main():
     service = PythonService.mService
     LocationManager = autoclass('android.location.LocationManager')
     Context = autoclass('android.content.Context')
+    _start_foreground_notification(service, Context)
     manager = service.getSystemService(Context.LOCATION_SERVICE)
     db = Database()
     db.open()
