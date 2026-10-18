@@ -61,6 +61,15 @@ class HeartRateMonitor:
             from android import mActivity
 
             Context = autoclass('android.content.Context')
+            ScanFilterBuilder = autoclass(
+                'android.bluetooth.le.ScanFilter$Builder'
+            )
+            ScanSettingsBuilder = autoclass(
+                'android.bluetooth.le.ScanSettings$Builder'
+            )
+            ParcelUuid = autoclass('android.os.ParcelUuid')
+            UUID = autoclass('java.util.UUID')
+            ArrayList = autoclass('java.util.ArrayList')
             manager = mActivity.getSystemService(Context.BLUETOOTH_SERVICE)
             adapter = manager.getAdapter()
             if adapter is None or not adapter.isEnabled():
@@ -104,7 +113,15 @@ class HeartRateMonitor:
             if self._scanner is None:
                 self._set_status('Bluetooth LE scanner is unavailable')
                 return False
-            self._scanner.startScan(self._scan_callback)
+            scan_filter = ScanFilterBuilder().setServiceUuid(
+                ParcelUuid(UUID.fromString(HEART_RATE_SERVICE_UUID))
+            ).build()
+            filters = ArrayList()
+            filters.add(scan_filter)
+            scan_settings = ScanSettingsBuilder().build()
+            self._scanner.startScan(
+                filters, scan_settings, self._scan_callback
+            )
             self._set_status('Scanning for heart-rate sensors…')
             Clock.schedule_once(lambda _dt: self.stop_scan(), timeout_seconds)
             return True

@@ -1,4 +1,4 @@
-"""Tests for standard BLE Heart Rate Service payload decoding."""
+"""Tests for BLE heart-rate scanning and payload decoding."""
 
 import sys
 import types
@@ -13,6 +13,99 @@ from cycling_tracker.ble.hr_monitor import (
 
 
 class HeartRatePayloadTests(unittest.TestCase):
+    def test_scan_filters_for_heart_rate_service(self):
+        class FakeScanFilterBuilder:
+            def setServiceUuid(self, service_uuid):
+                self.service_uuid = service_uuid
+                return self
+
+            def build(self):
+                return self.service_uuid
+
+        class FakeScanSettingsBuilder:
+            def build(self):
+                return 'scan-settings'
+
+        class FakeArrayList(list):
+            def add(self, value):
+                self.append(value)
+
+        class FakeScanner:
+            def startScan(self, filters, settings, callback):
+                self.filters = filters
+                self.settings = settings
+                self.callback = callback
+
+            def stopScan(self, _callback):
+                pass
+
+        class FakeAdapter:
+            def __init__(self, scanner):
+                self.scanner = scanner
+
+            def isEnabled(self):
+                return True
+
+            def getBluetoothLeScanner(self):
+                return self.scanner
+
+        class FakeUuid:
+            @staticmethod
+            def fromString(value):
+                return value
+
+        class FakeParcelUuid:
+            def __init__(self, value):
+                self.value = value
+
+        class FakeContext:
+            BLUETOOTH_SERVICE = 'bluetooth'
+
+        scanner = FakeScanner()
+        adapter = FakeAdapter(scanner)
+        activity = types.SimpleNamespace(
+            getSystemService=lambda _service: types.SimpleNamespace(
+                getAdapter=lambda: adapter
+            )
+        )
+        fake_jnius = types.ModuleType('jnius')
+        fake_jnius.autoclass = lambda name: {
+            'android.content.Context': FakeContext,
+            'android.bluetooth.le.ScanFilter$Builder': FakeScanFilterBuilder,
+            'android.bluetooth.le.ScanSettings$Builder':
+                FakeScanSettingsBuilder,
+            'android.os.ParcelUuid': FakeParcelUuid,
+            'java.util.UUID': FakeUuid,
+            'java.util.ArrayList': FakeArrayList,
+        }[name]
+        fake_jnius.PythonJavaClass = object
+        fake_jnius.java_method = lambda _signature: lambda method: method
+        fake_android = types.ModuleType('android')
+        fake_android.mActivity = activity
+        fake_clock = types.ModuleType('kivy.clock')
+        fake_clock.Clock = types.SimpleNamespace(
+            schedule_once=lambda _callback, _timeout: None
+        )
+
+        with patch.object(hr_monitor, 'platform', 'android'), patch.dict(
+            sys.modules, {
+                'jnius': fake_jnius,
+                'android': fake_android,
+                'kivy.clock': fake_clock,
+            }
+        ):
+            monitor = HeartRateMonitor(dispatch=lambda callback: callback())
+
+            self.assertTrue(monitor.scan())
+
+        self.assertEqual(len(scanner.filters), 1)
+        self.assertEqual(
+            scanner.filters[0].value,
+            '0000180d-0000-1000-8000-00805f9b34fb',
+        )
+        self.assertEqual(scanner.settings, 'scan-settings')
+        self.assertIs(scanner.callback, monitor._scan_callback)
+
     @staticmethod
     def _connect_with_api_level(api_level):
         class FakeGatt:
