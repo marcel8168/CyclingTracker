@@ -46,6 +46,24 @@ class DatabaseTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             self.db.insert_heart_rate(ride_id, 0)
 
+    def test_update_ride_elapsed_commits_without_leaving_transaction_open(self):
+        ride_id = self.db.create_ride()
+        self.db.update_ride_elapsed(ride_id, 42)
+
+        other = sqlite3.connect(self.db.db_path, timeout=0.2)
+        try:
+            other.execute(
+                'INSERT INTO samples '
+                '(ride_id, timestamp, latitude, longitude, altitude, speed, '
+                'bearing, accuracy, heart_rate, source) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                (ride_id, '2024-01-01T00:00:00Z', 51.5, -0.12, None, 0.0, None, None, None, 'gps')
+            )
+            other.commit()
+        finally:
+            other.close()
+
+        self.assertEqual(self.db.get_ride(ride_id)['total_elapsed_s'], 42)
+
     def test_upgrades_existing_schema_with_heart_rate_table(self):
         legacy_path = os.path.join(self.temp_dir.name, 'legacy.db')
         legacy = sqlite3.connect(legacy_path)

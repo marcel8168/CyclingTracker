@@ -118,11 +118,14 @@ class Database:
     def open(self):
         """Open the database and ensure the schema exists."""
         Logger.info(f'Database: opening {self.db_path}')
-        self._conn = sqlite3.connect(self.db_path)
+        self._conn = sqlite3.connect(self.db_path, timeout=10.0)
         self._conn.row_factory = sqlite3.Row
-        # WAL mode: readers don't block writers
+        # WAL mode: readers don't block writers, but separate processes still
+        # need a timeout to avoid the UI/service process deadlocking on each
+        # other while one connection has an in-flight write transaction.
         self._conn.execute('PRAGMA journal_mode=WAL')
         self._conn.execute('PRAGMA foreign_keys=ON')
+        self._conn.execute('PRAGMA busy_timeout = 10000')
         self._init_schema()
 
     def close(self):
@@ -228,11 +231,11 @@ class Database:
 
     def update_ride_elapsed(self, ride_id, total_elapsed_s):
         """Update the running elapsed time for a ride."""
-        self.conn.execute(
-            'UPDATE rides SET total_elapsed_s = ? WHERE id = ?',
-            (total_elapsed_s, ride_id)
-        )
-        # Commit with next sample to avoid excessive writes
+        with self.conn:
+            self.conn.execute(
+                'UPDATE rides SET total_elapsed_s = ? WHERE id = ?',
+                (total_elapsed_s, ride_id)
+            )
 
     # ── Sample operations ────────────────────────────────────────
 
