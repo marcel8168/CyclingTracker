@@ -45,9 +45,14 @@ class SettingsScreen(Screen):
             device_list.add_widget(button)
 
     def connect_device(self, address):
-        monitor = App.get_running_app().heart_rate_monitor
+        app = App.get_running_app()
+        monitor = app.heart_rate_monitor
         if monitor is not None:
-            monitor.connect(address)
+            db = app.ride_manager.db
+            if db._conn is None:
+                db.open()
+            if monitor.connect(address):
+                db.set_setting('ble_device_address', address)
 
     def disconnect_device(self):
         monitor = App.get_running_app().heart_rate_monitor

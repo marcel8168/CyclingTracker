@@ -51,7 +51,7 @@ def _default_db_path():
     return os.path.join(db_dir, 'cyclingtracker.db')
 
 
-_SCHEMA_VERSION = 2
+_SCHEMA_VERSION = 3
 
 _SCHEMA_SQL = """
 CREATE TABLE IF NOT EXISTS rides (
@@ -98,6 +98,11 @@ CREATE INDEX IF NOT EXISTS idx_hr_ride_timestamp
 
 CREATE TABLE IF NOT EXISTS schema_version (
     version INTEGER NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS app_settings (
+    key   TEXT PRIMARY KEY,
+    value TEXT NOT NULL
 );
 """
 
@@ -221,6 +226,22 @@ class Database:
         return self.conn.execute(
             "SELECT * FROM rides WHERE status = 'active' ORDER BY id DESC LIMIT 1"
         ).fetchone()
+
+    def set_setting(self, key, value):
+        """Persist an application setting shared by the UI and service."""
+        self.conn.execute(
+            '''INSERT INTO app_settings (key, value) VALUES (?, ?)
+               ON CONFLICT(key) DO UPDATE SET value = excluded.value''',
+            (key, value)
+        )
+        self.conn.commit()
+
+    def get_setting(self, key, default=None):
+        """Return an application setting, or its default when unset."""
+        row = self.conn.execute(
+            'SELECT value FROM app_settings WHERE key = ?', (key,)
+        ).fetchone()
+        return row['value'] if row else default
 
     def list_rides(self, limit=50, offset=0):
         """Return completed rides, newest first."""

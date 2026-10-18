@@ -91,6 +91,8 @@ class CyclingTrackerApp(App):
             self.service_status = 'Recording (desktop)'
 
     def _on_ride_state(self, _instance, state):
+        if state == 'recording' and self.heart_rate_monitor is not None:
+            self.heart_rate_monitor.disconnect()
         if state != 'recording' and self.service_status != 'Stopped':
             self.service_status = 'Stopped'
 

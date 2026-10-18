@@ -81,6 +81,21 @@ class DatabaseTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             self.db.insert_heart_rate(ride_id, 0)
 
+    def test_persists_application_settings(self):
+        self.db.set_setting('ble_device_address', '00:11:22:33:44:55')
+        service_db = Database(self.db.db_path)
+        service_db.open()
+        try:
+            selected_address = service_db.get_setting('ble_device_address')
+        finally:
+            service_db.close()
+
+        self.assertEqual(
+            selected_address,
+            '00:11:22:33:44:55',
+        )
+        self.assertIsNone(self.db.get_setting('missing'))
+
     def test_update_ride_elapsed_commits_without_leaving_transaction_open(self):
         ride_id = self.db.create_ride()
         self.db.update_ride_elapsed(ride_id, 42)
@@ -117,7 +132,7 @@ class DatabaseTests(unittest.TestCase):
                 "SELECT name FROM sqlite_master "
                 "WHERE type = 'table' AND name = 'heart_rate_samples'"
             ).fetchone()
-            self.assertEqual(version, 2)
+            self.assertEqual(version, 3)
             self.assertIsNotNone(table)
         finally:
             upgraded.close()

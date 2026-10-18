@@ -1,4 +1,4 @@
-"""Android foreground location recorder for screen-off ride tracking."""
+"""Android foreground GPS and BLE recorder for screen-off ride tracking."""
 
 import math
 import queue
@@ -9,6 +9,7 @@ from kivy.logger import Logger
 from kivy.utils import platform
 
 from cycling_tracker.location import haversine
+from cycling_tracker.ble.hr_monitor import HeartRateMonitor
 from cycling_tracker.models.database import Database
 
 
@@ -78,6 +79,26 @@ def _record_location(db, ride_id, location, previous):
     return distance_total, lat, lon
 
 
+def _record_heart_rate(db, ride_id, measurement):
+    bpm, timestamp = measurement
+    db.insert_heart_rate(ride_id, bpm, timestamp=timestamp)
+    Logger.debug(f'RideService: recorded heart-rate sample for ride {ride_id}')
+
+
+def _acquire_wake_lock(service, Context):
+    from jnius import autoclass
+
+    PowerManager = autoclass('android.os.PowerManager')
+    power_manager = service.getSystemService(Context.POWER_SERVICE)
+    wake_lock = power_manager.newWakeLock(
+        PowerManager.PARTIAL_WAKE_LOCK, 'CyclingTracker:RideRecording'
+    )
+    wake_lock.setReferenceCounted(False)
+    wake_lock.acquire()
+    Logger.info('RideService: partial wake lock acquired')
+    return wake_lock
+
+
 def _start_foreground_notification(service, Context):
     """Attach an Android notification so the OS accepts the service."""
     from jnius import autoclass
@@ -136,8 +157,11 @@ def main():
     db = Database()
     db.open()
     listener = None
+    heart_rate_monitor = None
+    wake_lock = None
     ride_id = None
     location_queue = queue.SimpleQueue()
+    heart_rate_queue = queue.SimpleQueue()
     location_state = (0.0, None, None)
     last_elapsed_write = 0
 
@@ -167,6 +191,20 @@ def main():
             Logger.warning('RideService: no active ride to record')
             return
         ride_id = active['id']
+        wake_lock = _acquire_wake_lock(service, Context)
+        ble_address = db.get_setting('ble_device_address')
+        if ble_address:
+            heart_rate_monitor = HeartRateMonitor(
+                on_heart_rate=lambda bpm, timestamp: heart_rate_queue.put(
+                    (bpm, timestamp)
+                ),
+                on_status=lambda status: Logger.info(
+                    f'RideService: BLE {status}'
+                ),
+                dispatch=lambda callback: callback(),
+            )
+            if not heart_rate_monitor.connect(ble_address, context=service):
+                Logger.warning('RideService: could not connect heart-rate sensor')
         elapsed_at_service_start = int(active['total_elapsed_s'] or 0)
         service_started = time.monotonic()
         location_state = (
@@ -200,6 +238,12 @@ def main():
                 location_state = _record_location(
                     db, ride_id, fix, location_state
                 )
+            while not heart_rate_queue.empty():
+                try:
+                    measurement = heart_rate_queue.get_nowait()
+                except queue.Empty:
+                    break
+                _record_heart_rate(db, ride_id, measurement)
             elapsed = elapsed_at_service_start + int(
                 time.monotonic() - service_started
             )
@@ -213,11 +257,20 @@ def main():
         Logger.exception('RideService: foreground tracking failed')
         raise
     finally:
+        if heart_rate_monitor is not None:
+            heart_rate_monitor.disconnect()
         if listener is not None:
             try:
                 manager.removeUpdates(listener)
             except Exception:
                 Logger.exception('RideService: could not remove GPS listener')
+        if wake_lock is not None:
+            try:
+                if wake_lock.isHeld():
+                    wake_lock.release()
+                    Logger.info('RideService: partial wake lock released')
+            except Exception:
+                Logger.exception('RideService: could not release wake lock')
         db.close()
         Logger.info('RideService: stopped')
 

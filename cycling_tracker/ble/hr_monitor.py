@@ -30,10 +30,12 @@ def parse_heart_rate_measurement(data):
 class HeartRateMonitor:
     """Scan, connect, and receive measurements from a BLE heart-rate strap."""
 
-    def __init__(self, on_heart_rate=None, on_status=None, on_devices=None):
+    def __init__(self, on_heart_rate=None, on_status=None, on_devices=None,
+                 dispatch=None):
         self.on_heart_rate = on_heart_rate or (lambda _bpm, _timestamp: None)
         self.on_status = on_status or (lambda _status: None)
         self.on_devices = on_devices or (lambda _devices: None)
+        self._dispatch = dispatch or self._dispatch_to_ui
         self.status = 'Disconnected'
         self.devices = []
         self._scanner = None
@@ -42,6 +44,11 @@ class HeartRateMonitor:
         self._gatt = None
         self._context = None
         self._connected_address = None
+
+    @staticmethod
+    def _dispatch_to_ui(callback):
+        from kivy.clock import Clock
+        Clock.schedule_once(lambda _dt: callback(), 0)
 
     def scan(self, timeout_seconds=12):
         """Begin a BLE scan, reporting discovered devices to the UI."""
@@ -73,11 +80,10 @@ class HeartRateMonitor:
                     address = device.getAddress()
                     name = device.getName()
                     if address:
-                        Clock.schedule_once(
-                            lambda _dt: monitor._add_device(
+                        monitor._dispatch(
+                            lambda: monitor._add_device(
                                 address, name or 'Heart-rate sensor'
-                            ),
-                            0
+                            )
                         )
 
                 @java_method('([Landroid/bluetooth/le/ScanResult;)V')
@@ -87,11 +93,10 @@ class HeartRateMonitor:
 
                 @java_method('(I)V')
                 def onScanFailed(self, error_code):
-                    Clock.schedule_once(
-                        lambda _dt: monitor._set_status(
+                    monitor._dispatch(
+                        lambda: monitor._set_status(
                             f'Bluetooth scan failed ({error_code})'
-                        ),
-                        0
+                        )
                     )
 
             self._scan_callback = ScanCallback()
@@ -120,17 +125,20 @@ class HeartRateMonitor:
             self._set_status('No heart-rate sensor found' if not self.devices else
                              'Select a heart-rate sensor')
 
-    def connect(self, address):
+    def connect(self, address, context=None):
         """Connect to a discovered BLE device and subscribe to measurements."""
         if platform != 'android':
             self._set_status('Bluetooth connection is available on Android')
             return False
         try:
-            from kivy.clock import Clock
             from jnius import autoclass, PythonJavaClass, java_method
 
             self.stop_scan()
             Context = autoclass('android.content.Context')
+            if context is not None:
+                self._context = context
+            if self._context is None:
+                raise RuntimeError('Bluetooth context is unavailable; scan first')
             manager = self._context.getSystemService(Context.BLUETOOTH_SERVICE)
             device = manager.getAdapter().getRemoteDevice(address)
             monitor = self
@@ -147,25 +155,24 @@ class HeartRateMonitor:
                         'android.bluetooth.BluetoothProfile'
                     )
                     if status == 0 and new_state == BluetoothProfile.STATE_CONNECTED:
-                        Clock.schedule_once(
-                            lambda _dt: monitor._set_status('Connected; discovering service'),
-                            0
+                        monitor._dispatch(
+                            lambda: monitor._set_status(
+                                'Connected; discovering service'
+                            )
                         )
                         gatt.discoverServices()
                     else:
-                        Clock.schedule_once(
-                            lambda _dt: monitor._on_disconnected(gatt, status),
-                            0
+                        monitor._dispatch(
+                            lambda: monitor._on_disconnected(gatt, status)
                         )
 
                 @java_method('(Landroid/bluetooth/BluetoothGatt;I)V')
                 def onServicesDiscovered(self, gatt, status):
                     if status != 0:
-                        Clock.schedule_once(
-                            lambda _dt: monitor._set_status(
+                        monitor._dispatch(
+                            lambda: monitor._set_status(
                                 f'Service discovery failed ({status})'
-                            ),
-                            0
+                            )
                         )
                         return
                     service = gatt.getService(
@@ -174,11 +181,10 @@ class HeartRateMonitor:
                         )
                     )
                     if service is None:
-                        Clock.schedule_once(
-                            lambda _dt: monitor._set_status(
+                        monitor._dispatch(
+                            lambda: monitor._set_status(
                                 'Device does not provide Heart Rate Service'
-                            ),
-                            0
+                            )
                         )
                         return
                     characteristic = service.getCharacteristic(
@@ -189,11 +195,10 @@ class HeartRateMonitor:
                     if characteristic is None or not gatt.setCharacteristicNotification(
                         characteristic, True
                     ):
-                        Clock.schedule_once(
-                            lambda _dt: monitor._set_status(
+                        monitor._dispatch(
+                            lambda: monitor._set_status(
                                 'Could not subscribe to heart-rate measurements'
-                            ),
-                            0
+                            )
                         )
                         return
                     descriptor = characteristic.getDescriptor(
@@ -202,21 +207,19 @@ class HeartRateMonitor:
                         )
                     )
                     if descriptor is None:
-                        Clock.schedule_once(
-                            lambda _dt: monitor._set_status(
+                        monitor._dispatch(
+                            lambda: monitor._set_status(
                                 'Heart-rate notification descriptor is missing'
-                            ),
-                            0
+                            )
                         )
                         return
                     from jnius import Array
                     descriptor.setValue(Array('b', [1, 0]))
                     if not gatt.writeDescriptor(descriptor):
-                        Clock.schedule_once(
-                            lambda _dt: monitor._set_status(
+                        monitor._dispatch(
+                            lambda: monitor._set_status(
                                 'Could not enable heart-rate notifications'
-                            ),
-                            0
+                            )
                         )
 
                 @java_method(
@@ -228,8 +231,8 @@ class HeartRateMonitor:
                         'Connected' if status == 0
                         else f'Notification setup failed ({status})'
                     )
-                    Clock.schedule_once(
-                        lambda _dt: monitor._set_status(message), 0
+                    monitor._dispatch(
+                        lambda: monitor._set_status(message)
                     )
 
                 @java_method(
@@ -245,8 +248,8 @@ class HeartRateMonitor:
                     except ValueError as exc:
                         Logger.warning(f'HeartRateMonitor: invalid measurement: {exc}')
                         return
-                    Clock.schedule_once(
-                        lambda _dt: monitor._on_measurement(bpm), 0
+                    monitor._dispatch(
+                        lambda: monitor._on_measurement(bpm)
                     )
 
             self._connected_address = address
