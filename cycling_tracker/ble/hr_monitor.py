@@ -134,7 +134,10 @@ class HeartRateMonitor:
             from jnius import autoclass, PythonJavaClass, java_method
 
             self.stop_scan()
+            if self._gatt is not None:
+                self.disconnect()
             Context = autoclass('android.content.Context')
+            Build = autoclass('android.os.Build')
             if context is not None:
                 self._context = context
             if self._context is None:
@@ -235,22 +238,24 @@ class HeartRateMonitor:
                         lambda: monitor._set_status(message)
                     )
 
-                @java_method(
-                    '(Landroid/bluetooth/BluetoothGatt;'
-                    'Landroid/bluetooth/BluetoothGattCharacteristic;)V'
-                )
-                def onCharacteristicChanged(self, _gatt, characteristic):
-                    data = characteristic.getValue()
-                    if data is None:
-                        return
-                    try:
-                        bpm = parse_heart_rate_measurement(data)
-                    except ValueError as exc:
-                        Logger.warning(f'HeartRateMonitor: invalid measurement: {exc}')
-                        return
-                    monitor._dispatch(
-                        lambda: monitor._on_measurement(bpm)
+                if Build.VERSION.SDK_INT >= 33:
+                    @java_method(
+                        '(Landroid/bluetooth/BluetoothGatt;'
+                        'Landroid/bluetooth/BluetoothGattCharacteristic;[B)V'
                     )
+                    def onCharacteristicChanged(
+                        self, _gatt, _characteristic, data
+                    ):
+                        monitor._on_characteristic_changed(data)
+                else:
+                    @java_method(
+                        '(Landroid/bluetooth/BluetoothGatt;'
+                        'Landroid/bluetooth/BluetoothGattCharacteristic;)V'
+                    )
+                    def onCharacteristicChanged(self, _gatt, characteristic):
+                        monitor._on_characteristic_changed(
+                            characteristic.getValue()
+                        )
 
             self._connected_address = address
             self._gatt_callback = GattCallback()
@@ -272,11 +277,7 @@ class HeartRateMonitor:
     def disconnect(self):
         self.stop_scan()
         if self._gatt is not None:
-            try:
-                self._gatt.disconnect()
-                self._gatt.close()
-            except Exception as exc:
-                Logger.warning(f'HeartRateMonitor: disconnect failed: {exc}')
+            self._release_gatt(self._gatt, disconnect=True)
         self._gatt = None
         self._gatt_callback = None
         self._connected_address = None
@@ -297,13 +298,37 @@ class HeartRateMonitor:
                 f'HeartRateMonitor: ignoring out-of-range heart rate ({bpm})'
             )
 
+    def _on_characteristic_changed(self, data):
+        if data is None:
+            return
+        try:
+            bpm = parse_heart_rate_measurement(data)
+        except ValueError as exc:
+            Logger.warning(f'HeartRateMonitor: invalid measurement: {exc}')
+            return
+        self._dispatch(lambda: self._on_measurement(bpm))
+
     def _on_disconnected(self, gatt, status):
         if self._gatt is gatt:
+            self._release_gatt(gatt)
             self._gatt = None
             self._gatt_callback = None
+            self._connected_address = None
             self._set_status(
                 'Disconnected' if status == 0 else f'Disconnected ({status})'
             )
+
+    @staticmethod
+    def _release_gatt(gatt, disconnect=False):
+        if disconnect:
+            try:
+                gatt.disconnect()
+            except Exception as exc:
+                Logger.warning(f'HeartRateMonitor: GATT disconnect failed: {exc}')
+        try:
+            gatt.close()
+        except Exception as exc:
+            Logger.warning(f'HeartRateMonitor: GATT close failed: {exc}')
 
     def _set_status(self, status):
         self.status = status
