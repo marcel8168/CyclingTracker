@@ -37,13 +37,16 @@ def _default_db_path():
             raise RuntimeError('Android app/service context is unavailable')
         db_dir = context.getFilesDir().getAbsolutePath()
     else:
-        # Desktop: store next to the app
+        # Desktop: store next to the app in an owner-only directory.
         db_dir = os.path.join(
             os.path.dirname(os.path.dirname(os.path.dirname(
                 os.path.abspath(__file__)
             ))),
             'data'
         )
+        os.makedirs(db_dir, mode=0o700, exist_ok=True)
+        if os.name == 'posix':
+            os.chmod(db_dir, 0o700)
     os.makedirs(db_dir, exist_ok=True)
     return os.path.join(db_dir, 'cyclingtracker.db')
 
@@ -118,6 +121,14 @@ class Database:
     def open(self):
         """Open the database and ensure the schema exists."""
         Logger.info(f'Database: opening {self.db_path}')
+        if os.name == 'posix':
+            descriptor = os.open(
+                self.db_path, os.O_CREAT | os.O_RDWR, 0o600
+            )
+            try:
+                os.fchmod(descriptor, 0o600)
+            finally:
+                os.close(descriptor)
         self._conn = sqlite3.connect(self.db_path, timeout=10.0)
         self._conn.row_factory = sqlite3.Row
         # WAL mode: readers don't block writers, but separate processes still

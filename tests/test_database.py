@@ -2,10 +2,11 @@
 
 import os
 import sqlite3
+import stat
 import tempfile
 import unittest
 
-from cycling_tracker.models.database import Database
+from cycling_tracker.models.database import Database, _default_db_path
 
 
 class DatabaseTests(unittest.TestCase):
@@ -30,6 +31,40 @@ class DatabaseTests(unittest.TestCase):
         self.assertEqual(
             self.db.get_heart_rate_samples(ride_id)[0]['heart_rate'], 142
         )
+
+    @unittest.skipUnless(os.name == 'posix', 'POSIX file permissions required')
+    def test_database_file_is_owner_only(self):
+        mode = stat.S_IMODE(os.stat(self.db.db_path).st_mode)
+
+        self.assertEqual(mode, 0o600)
+
+    @unittest.skipUnless(os.name == 'posix', 'POSIX file permissions required')
+    def test_open_restricts_existing_database_file_permissions(self):
+        self.db.close()
+        os.chmod(self.db.db_path, 0o644)
+
+        self.db.open()
+
+        mode = stat.S_IMODE(os.stat(self.db.db_path).st_mode)
+        self.assertEqual(mode, 0o600)
+
+    @unittest.skipUnless(os.name == 'posix', 'POSIX file permissions required')
+    def test_default_database_directory_is_owner_only(self):
+        from unittest import mock
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            project_root = os.path.join(temp_dir, 'project')
+            module_file = os.path.join(
+                project_root, 'cycling_tracker', 'models', 'database.py'
+            )
+            os.makedirs(os.path.dirname(module_file))
+            with mock.patch(
+                'cycling_tracker.models.database.__file__', module_file
+            ), mock.patch('cycling_tracker.models.database.platform', 'linux'):
+                db_path = _default_db_path()
+
+            mode = stat.S_IMODE(os.stat(os.path.dirname(db_path)).st_mode)
+            self.assertEqual(mode, 0o700)
 
     def test_discard_removes_all_samples(self):
         ride_id = self.db.create_ride()
