@@ -121,6 +121,47 @@ class RideManagerTests(unittest.TestCase):
         self.assertEqual(self.db.get_samples(ride_id), [])
         self.timers[0].cancel.assert_called_once_with()
 
+    def test_flush_progress_persists_current_elapsed_time(self):
+        with mock.patch(
+            'cycling_tracker.ride_manager.time.monotonic',
+            side_effect=[100, 108],
+        ):
+            self.manager.start()
+            self.manager.flush_progress()
+
+        ride = self.db.get_ride(self.manager.ride_id)
+        self.assertEqual(ride['total_elapsed_s'], 8)
+
+    def test_flush_progress_does_not_overwrite_android_service_progress(self):
+        self.manager.start()
+        ride_id = self.manager.ride_id
+        self.db.update_ride_elapsed(ride_id, 12)
+
+        with mock.patch('cycling_tracker.ride_manager.platform', 'android'):
+            self.manager.flush_progress()
+
+        self.assertEqual(self.db.get_ride(ride_id)['total_elapsed_s'], 12)
+
+    def test_close_releases_ui_resources_without_finishing_ride(self):
+        self.manager.start()
+        ride_id = self.manager.ride_id
+        self.manager.service.running = True
+
+        with (
+            mock.patch('cycling_tracker.ride_manager.platform', 'android'),
+            mock.patch.object(self.manager.service, 'stop') as stop_service,
+        ):
+            self.manager.close()
+
+        self.assertIsNone(self.db._conn)
+        self.assertEqual(self.manager.state, 'recording')
+        self.timers[0].cancel.assert_called_once_with()
+        self.manager.location.stop.assert_called_once_with()
+        stop_service.assert_not_called()
+        self.assertTrue(self.manager.service.running)
+        self.db.open()
+        self.assertEqual(self.db.get_ride(ride_id)['status'], 'active')
+
 
 if __name__ == '__main__':
     unittest.main()

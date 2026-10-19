@@ -168,6 +168,20 @@ class RideManager(EventDispatcher):
         self._clear_metrics()
         self.state = 'idle'
 
+    def flush_progress(self):
+        """Persist elapsed ride progress before the UI is suspended."""
+        if self.state != 'recording' or platform == 'android':
+            return
+        self._capture_elapsed()
+        self._persist_progress()
+
+    def close(self):
+        """Release UI-process resources without stopping an Android service."""
+        self.flush_progress()
+        self._cancel_timer()
+        self.location.stop()
+        self.db.close()
+
     def record_heart_rate(self, bpm, timestamp=None):
         """Persist a BLE measurement and update the live heart-rate value."""
         if self.state != 'recording':

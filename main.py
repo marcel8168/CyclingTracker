@@ -112,6 +112,10 @@ class CyclingTrackerApp(App):
     def on_pause(self):
         """Allow the app to pause (Android lifecycle)."""
         Logger.info('CyclingTracker: on_pause')
+        if self.heart_rate_monitor is not None:
+            self.heart_rate_monitor.stop_scan()
+        if self.ride_manager is not None:
+            self.ride_manager.flush_progress()
         return True
 
     def on_resume(self):
@@ -119,6 +123,14 @@ class CyclingTrackerApp(App):
         Logger.info('CyclingTracker: on_resume')
         if self.permission_manager:
             self.permission_manager.refresh_status()
+
+    def on_stop(self):
+        """Release resources owned by the UI process."""
+        Logger.info('CyclingTracker: on_stop')
+        if self.heart_rate_monitor is not None:
+            self.heart_rate_monitor.disconnect()
+        if self.ride_manager is not None:
+            self.ride_manager.close()
 
     def switch_screen(self, screen_name):
         """Navigate to the named screen."""

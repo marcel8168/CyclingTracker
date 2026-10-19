@@ -3,7 +3,7 @@
 import sys
 import types
 import unittest
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 
 import cycling_tracker.ble.hr_monitor as hr_monitor
 from cycling_tracker.ble.hr_monitor import (
@@ -37,7 +37,7 @@ class HeartRatePayloadTests(unittest.TestCase):
                 self.callback = callback
 
             def stopScan(self, _callback):
-                pass
+                self.stopped = True
 
         class FakeAdapter:
             def __init__(self, scanner):
@@ -63,6 +63,7 @@ class HeartRatePayloadTests(unittest.TestCase):
 
         scanner = FakeScanner()
         adapter = FakeAdapter(scanner)
+        timeout_event = Mock()
         activity = types.SimpleNamespace(
             getSystemService=lambda _service: types.SimpleNamespace(
                 getAdapter=lambda: adapter
@@ -84,7 +85,7 @@ class HeartRatePayloadTests(unittest.TestCase):
         fake_android.mActivity = activity
         fake_clock = types.ModuleType('kivy.clock')
         fake_clock.Clock = types.SimpleNamespace(
-            schedule_once=lambda _callback, _timeout: None
+            schedule_once=lambda _callback, _timeout: timeout_event
         )
 
         with patch.object(hr_monitor, 'platform', 'android'), patch.dict(
@@ -105,6 +106,12 @@ class HeartRatePayloadTests(unittest.TestCase):
         )
         self.assertEqual(scanner.settings, 'scan-settings')
         self.assertIs(scanner.callback, monitor._scan_callback)
+        monitor.stop_scan()
+        self.assertIsNone(monitor._scan_timeout_event)
+        self.assertIsNone(monitor._scanner)
+        self.assertTrue(scanner.stopped)
+        timeout_event.cancel.assert_called_once_with()
+        self.assertTrue(timeout_event.cancel.called)
 
     @staticmethod
     def _connect_with_api_level(api_level):

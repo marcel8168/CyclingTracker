@@ -40,6 +40,7 @@ class HeartRateMonitor:
         self.devices = []
         self._scanner = None
         self._scan_callback = None
+        self._scan_timeout_event = None
         self._gatt_callback = None
         self._gatt = None
         self._context = None
@@ -123,7 +124,9 @@ class HeartRateMonitor:
                 filters, scan_settings, self._scan_callback
             )
             self._set_status('Scanning for heart-rate sensors…')
-            Clock.schedule_once(lambda _dt: self.stop_scan(), timeout_seconds)
+            self._scan_timeout_event = Clock.schedule_once(
+                lambda _dt: self.stop_scan(), timeout_seconds
+            )
             return True
         except Exception as exc:
             Logger.exception(f'HeartRateMonitor: scan failed: {exc}')
@@ -131,6 +134,9 @@ class HeartRateMonitor:
             return False
 
     def stop_scan(self):
+        if self._scan_timeout_event is not None:
+            self._scan_timeout_event.cancel()
+            self._scan_timeout_event = None
         if self._scanner is not None and self._scan_callback is not None:
             try:
                 self._scanner.stopScan(self._scan_callback)
