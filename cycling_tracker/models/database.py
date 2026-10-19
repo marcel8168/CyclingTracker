@@ -51,7 +51,7 @@ def _default_db_path():
     return os.path.join(db_dir, 'cyclingtracker.db')
 
 
-_SCHEMA_VERSION = 3
+_SCHEMA_VERSION = 4
 
 _SCHEMA_SQL = """
 CREATE TABLE IF NOT EXISTS rides (
@@ -76,7 +76,7 @@ CREATE TABLE IF NOT EXISTS samples (
     accuracy    REAL,
     heart_rate  INTEGER,
     source      TEXT    NOT NULL DEFAULT 'gps',
-    FOREIGN KEY (ride_id) REFERENCES rides(id)
+    FOREIGN KEY (ride_id) REFERENCES rides(id) ON DELETE CASCADE
 );
 
 CREATE INDEX IF NOT EXISTS idx_samples_ride_id
@@ -105,6 +105,119 @@ CREATE TABLE IF NOT EXISTS app_settings (
     value TEXT NOT NULL
 );
 """
+
+
+def _migrate_to_v2(conn):
+    conn.execute(
+        """CREATE TABLE IF NOT EXISTS heart_rate_samples (
+               id          INTEGER PRIMARY KEY AUTOINCREMENT,
+               ride_id     INTEGER NOT NULL,
+               timestamp   TEXT    NOT NULL,
+               heart_rate  INTEGER NOT NULL,
+               FOREIGN KEY (ride_id) REFERENCES rides(id) ON DELETE CASCADE
+           )"""
+    )
+    conn.execute(
+        """CREATE INDEX IF NOT EXISTS idx_hr_ride_timestamp
+           ON heart_rate_samples(ride_id, timestamp)"""
+    )
+
+
+def _migrate_to_v3(conn):
+    columns = {
+        row['name'] for row in conn.execute('PRAGMA table_info(rides)')
+    }
+    if not columns:
+        conn.execute(
+            """CREATE TABLE rides (
+                   id               INTEGER PRIMARY KEY AUTOINCREMENT,
+                   started_at       TEXT    NOT NULL,
+                   ended_at         TEXT,
+                   status           TEXT    NOT NULL DEFAULT 'active',
+                   total_distance_m REAL    NOT NULL DEFAULT 0.0,
+                   total_elapsed_s  INTEGER NOT NULL DEFAULT 0,
+                   notes            TEXT
+               )"""
+        )
+    elif 'total_elapsed_s' not in columns:
+        conn.execute(
+            'ALTER TABLE rides ADD COLUMN total_elapsed_s '
+            'INTEGER NOT NULL DEFAULT 0'
+        )
+
+
+def _migrate_to_v4(conn):
+    samples_table = conn.execute(
+        """SELECT 1 FROM sqlite_master
+           WHERE type = 'table' AND name = 'samples'"""
+    ).fetchone()
+    if not samples_table:
+        conn.execute(
+            """CREATE TABLE samples (
+                   id          INTEGER PRIMARY KEY AUTOINCREMENT,
+                   ride_id     INTEGER NOT NULL,
+                   timestamp   TEXT    NOT NULL,
+                   latitude    REAL    NOT NULL,
+                   longitude   REAL    NOT NULL,
+                   altitude    REAL,
+                   speed       REAL,
+                   bearing     REAL,
+                   accuracy    REAL,
+                   heart_rate  INTEGER,
+                   source      TEXT    NOT NULL DEFAULT 'gps',
+                   FOREIGN KEY (ride_id) REFERENCES rides(id) ON DELETE CASCADE
+               )"""
+        )
+        return
+    foreign_keys = conn.execute(
+        'PRAGMA foreign_key_list(samples)'
+    ).fetchall()
+    if any(
+        row['table'] == 'rides'
+        and row['from'] == 'ride_id'
+        and row['on_delete'] == 'CASCADE'
+        for row in foreign_keys
+    ):
+        return
+    conn.execute(
+        """CREATE TABLE samples_migrated (
+               id          INTEGER PRIMARY KEY AUTOINCREMENT,
+               ride_id     INTEGER NOT NULL,
+               timestamp   TEXT    NOT NULL,
+               latitude    REAL    NOT NULL,
+               longitude   REAL    NOT NULL,
+               altitude    REAL,
+               speed       REAL,
+               bearing     REAL,
+               accuracy    REAL,
+               heart_rate  INTEGER,
+               source      TEXT    NOT NULL DEFAULT 'gps',
+               FOREIGN KEY (ride_id) REFERENCES rides(id) ON DELETE CASCADE
+           )"""
+    )
+    conn.execute(
+        """INSERT INTO samples_migrated
+               (id, ride_id, timestamp, latitude, longitude, altitude, speed,
+                bearing, accuracy, heart_rate, source)
+           SELECT id, ride_id, timestamp, latitude, longitude, altitude, speed,
+                  bearing, accuracy, heart_rate, source
+           FROM samples"""
+    )
+    conn.execute('DROP TABLE samples')
+    conn.execute('ALTER TABLE samples_migrated RENAME TO samples')
+    conn.execute(
+        'CREATE INDEX idx_samples_ride_id ON samples(ride_id)'
+    )
+    conn.execute(
+        'CREATE INDEX idx_samples_timestamp ON samples(ride_id, timestamp)'
+    )
+
+
+_MIGRATIONS = {
+    2: _migrate_to_v2,
+    3: _migrate_to_v3,
+    4: _migrate_to_v4,
+}
 
 
 class Database:
@@ -159,23 +272,56 @@ class Database:
 
     def _init_schema(self):
         """Create tables if they don't exist."""
-        self.conn.executescript(_SCHEMA_SQL)
-        # Track schema version
-        row = self.conn.execute(
-            'SELECT version FROM schema_version LIMIT 1'
+        has_version_table = self.conn.execute(
+            """SELECT 1 FROM sqlite_master
+               WHERE type = 'table' AND name = 'schema_version'"""
         ).fetchone()
-        if row is None:
+        if not has_version_table:
+            self.conn.executescript(_SCHEMA_SQL)
             self.conn.execute(
                 'INSERT INTO schema_version (version) VALUES (?)',
                 (_SCHEMA_VERSION,)
             )
             self.conn.commit()
-        elif row['version'] < _SCHEMA_VERSION:
+            Logger.info(f'Database: schema version {_SCHEMA_VERSION}')
+            return
+
+        row = self.conn.execute(
+            'SELECT version FROM schema_version LIMIT 1'
+        ).fetchone()
+        if row is None:
             self.conn.execute(
-                'UPDATE schema_version SET version = ?',
-                (_SCHEMA_VERSION,)
+                'INSERT INTO schema_version (version) VALUES (1)'
             )
             self.conn.commit()
+            version = 1
+        else:
+            version = row['version']
+        if version > _SCHEMA_VERSION:
+            raise RuntimeError(
+                f'Database schema version {version} is newer than '
+                f'supported version {_SCHEMA_VERSION}'
+            )
+        while version < _SCHEMA_VERSION:
+            target_version = version + 1
+            migration = _MIGRATIONS.get(target_version)
+            if migration is None:
+                raise RuntimeError(
+                    f'No database migration for version {target_version}'
+                )
+            self.conn.execute('BEGIN IMMEDIATE')
+            try:
+                migration(self.conn)
+                self.conn.execute(
+                    'UPDATE schema_version SET version = ?',
+                    (target_version,)
+                )
+                self.conn.commit()
+            except Exception:
+                self.conn.rollback()
+                raise
+            version = target_version
+        self.conn.executescript(_SCHEMA_SQL)
         Logger.info(f'Database: schema version {_SCHEMA_VERSION}')
 
     # ── Ride operations ──────────────────────────────────────────
@@ -207,10 +353,6 @@ class Database:
 
     def discard_ride(self, ride_id):
         """Delete a ride and all its samples (e.g. user cancellation)."""
-        self.conn.execute(
-            'DELETE FROM heart_rate_samples WHERE ride_id = ?', (ride_id,)
-        )
-        self.conn.execute('DELETE FROM samples WHERE ride_id = ?', (ride_id,))
         self.conn.execute('DELETE FROM rides WHERE id = ?', (ride_id,))
         self.conn.commit()
         Logger.info(f'Database: discarded ride {ride_id}')
@@ -337,10 +479,6 @@ class Database:
 
     def delete_ride(self, ride_id):
         """Delete a ride and all its samples."""
-        self.conn.execute(
-            'DELETE FROM heart_rate_samples WHERE ride_id = ?', (ride_id,)
-        )
-        self.conn.execute('DELETE FROM samples WHERE ride_id = ?', (ride_id,))
         self.conn.execute('DELETE FROM rides WHERE id = ?', (ride_id,))
         self.conn.commit()
         Logger.info(f'Database: deleted ride {ride_id}')

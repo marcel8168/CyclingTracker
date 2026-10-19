@@ -76,6 +76,7 @@ class DatabaseTests(unittest.TestCase):
         self.db.discard_ride(ride_id)
 
         self.assertIsNone(self.db.get_ride(ride_id))
+        self.assertEqual(self.db.get_samples(ride_id), [])
         self.assertEqual(self.db.get_heart_rate_samples(ride_id), [])
 
     def test_rejects_invalid_heart_rate(self):
@@ -171,8 +172,94 @@ class DatabaseTests(unittest.TestCase):
                 "SELECT name FROM sqlite_master "
                 "WHERE type = 'table' AND name = 'heart_rate_samples'"
             ).fetchone()
-            self.assertEqual(version, 3)
+            self.assertEqual(version, 4)
             self.assertIsNotNone(table)
+        finally:
+            upgraded.close()
+
+    def test_migrates_existing_samples_to_cascade_on_ride_delete(self):
+        legacy_path = os.path.join(self.temp_dir.name, 'legacy_samples.db')
+        legacy = sqlite3.connect(legacy_path)
+        legacy.executescript(
+            """
+            CREATE TABLE schema_version (version INTEGER NOT NULL);
+            INSERT INTO schema_version (version) VALUES (2);
+            CREATE TABLE rides (
+                id INTEGER PRIMARY KEY,
+                started_at TEXT NOT NULL,
+                ended_at TEXT,
+                status TEXT NOT NULL DEFAULT 'active',
+                total_distance_m REAL NOT NULL DEFAULT 0.0,
+                total_elapsed_s INTEGER NOT NULL DEFAULT 0,
+                notes TEXT
+            );
+            CREATE TABLE samples (
+                id INTEGER PRIMARY KEY,
+                ride_id INTEGER NOT NULL,
+                timestamp TEXT NOT NULL,
+                latitude REAL NOT NULL,
+                longitude REAL NOT NULL,
+                altitude REAL,
+                speed REAL,
+                bearing REAL,
+                accuracy REAL,
+                heart_rate INTEGER,
+                source TEXT NOT NULL DEFAULT 'gps',
+                FOREIGN KEY (ride_id) REFERENCES rides(id)
+            );
+            INSERT INTO rides (id, started_at) VALUES (1, '2026-01-01T00:00:00Z');
+            INSERT INTO samples (ride_id, timestamp, latitude, longitude)
+                VALUES (1, '2026-01-01T00:00:01Z', 51.5, -0.12);
+            """
+        )
+        legacy.commit()
+        legacy.close()
+
+        upgraded = Database(legacy_path)
+        upgraded.open()
+        try:
+            foreign_key = upgraded.conn.execute(
+                'PRAGMA foreign_key_list(samples)'
+            ).fetchone()
+            self.assertEqual(foreign_key['on_delete'], 'CASCADE')
+            self.assertEqual(upgraded.get_sample_count(1), 1)
+
+            upgraded.conn.execute('DELETE FROM rides WHERE id = 1')
+            upgraded.conn.commit()
+            self.assertEqual(upgraded.get_sample_count(1), 0)
+        finally:
+            upgraded.close()
+
+    def test_migrates_missing_total_elapsed_column(self):
+        legacy_path = os.path.join(self.temp_dir.name, 'legacy_rides.db')
+        legacy = sqlite3.connect(legacy_path)
+        legacy.executescript(
+            """
+            CREATE TABLE schema_version (version INTEGER NOT NULL);
+            INSERT INTO schema_version (version) VALUES (2);
+            CREATE TABLE rides (
+                id INTEGER PRIMARY KEY,
+                started_at TEXT NOT NULL,
+                ended_at TEXT,
+                status TEXT NOT NULL DEFAULT 'active',
+                total_distance_m REAL NOT NULL DEFAULT 0.0,
+                notes TEXT
+            );
+            INSERT INTO rides (id, started_at) VALUES (1, '2026-01-01T00:00:00Z');
+            """
+        )
+        legacy.commit()
+        legacy.close()
+
+        upgraded = Database(legacy_path)
+        upgraded.open()
+        try:
+            columns = {
+                row['name']
+                for row in upgraded.conn.execute('PRAGMA table_info(rides)')
+            }
+            self.assertIn('total_elapsed_s', columns)
+            self.assertEqual(upgraded.get_ride(1)['total_elapsed_s'], 0)
         finally:
             upgraded.close()
 
