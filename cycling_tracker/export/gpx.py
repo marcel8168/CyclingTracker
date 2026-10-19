@@ -1,8 +1,11 @@
 """GPX 1.1 serialization and platform-specific ride export."""
 
+import math
 import os
 import xml.etree.ElementTree as ET
 from datetime import datetime
+
+from kivy.logger import Logger
 
 GPX_NS = 'http://www.topografix.com/GPX/1/1'
 GPXTPX_NS = 'http://www.garmin.com/xmlschemas/TrackPointExtension/v1'
@@ -24,6 +27,20 @@ def _parse_time(value):
     return parsed
 
 
+def _valid_heart_rate(value):
+    if value is None:
+        return None
+    try:
+        bpm = int(value)
+    except (TypeError, ValueError, OverflowError):
+        Logger.warning('GPX export: skipped invalid heart-rate value')
+        return None
+    if not 1 <= bpm <= 255:
+        Logger.warning('GPX export: skipped out-of-range heart-rate value')
+        return None
+    return bpm
+
+
 def build_gpx(ride, samples, heart_rate_samples=()):
     """Return a GPX 1.1 document containing one recorded track."""
     root = ET.Element(_tag(GPX_NS, 'gpx'), {
@@ -41,16 +58,31 @@ def build_gpx(ride, samples, heart_rate_samples=()):
     )
     segment = ET.SubElement(track, _tag(GPX_NS, 'trkseg'))
 
-    timed_hr = [
-        (_parse_time(sample['timestamp']), int(sample['heart_rate']))
-        for sample in heart_rate_samples
-    ]
+    timed_hr = []
+    for sample in heart_rate_samples:
+        bpm = _valid_heart_rate(sample['heart_rate'])
+        if bpm is not None:
+            timed_hr.append((_parse_time(sample['timestamp']), bpm))
     hr_index = 0
     for sample in samples:
-        latitude = float(sample['latitude'])
-        longitude = float(sample['longitude'])
-        if not -90 <= latitude <= 90 or not -180 <= longitude <= 180:
-            raise ValueError('Ride contains an invalid GPS coordinate')
+        try:
+            latitude = float(sample['latitude'])
+            longitude = float(sample['longitude'])
+        except (TypeError, ValueError, OverflowError):
+            Logger.warning(
+                'GPX export: skipped sample with invalid GPS coordinates'
+            )
+            continue
+        if (
+            not math.isfinite(latitude)
+            or not math.isfinite(longitude)
+            or not -90 <= latitude <= 90
+            or not -180 <= longitude <= 180
+        ):
+            Logger.warning(
+                'GPX export: skipped sample with invalid GPS coordinates'
+            )
+            continue
         point = ET.SubElement(segment, _tag(GPX_NS, 'trkpt'), {
             'lat': f'{latitude:.7f}',
             'lon': f'{longitude:.7f}',
@@ -75,13 +107,13 @@ def build_gpx(ride, samples, heart_rate_samples=()):
             if abs((closest_time - sample_time).total_seconds()) <= 5:
                 bpm = closest_bpm
         if bpm is not None:
-            if not 1 <= int(bpm) <= 255:
-                raise ValueError('Ride contains an invalid heart-rate value')
-            extensions = ET.SubElement(point, _tag(GPX_NS, 'extensions'))
-            track_point = ET.SubElement(
-                extensions, _tag(GPXTPX_NS, 'TrackPointExtension')
-            )
-            ET.SubElement(track_point, _tag(GPXTPX_NS, 'hr')).text = str(int(bpm))
+            bpm = _valid_heart_rate(bpm)
+            if bpm is not None:
+                extensions = ET.SubElement(point, _tag(GPX_NS, 'extensions'))
+                track_point = ET.SubElement(
+                    extensions, _tag(GPXTPX_NS, 'TrackPointExtension')
+                )
+                ET.SubElement(track_point, _tag(GPXTPX_NS, 'hr')).text = str(bpm)
 
     return ET.tostring(root, encoding='utf-8', xml_declaration=True)
 

@@ -51,10 +51,43 @@ class GpxTests(unittest.TestCase):
             '142',
         )
 
-    def test_rejects_invalid_coordinates(self):
-        bad_samples = [dict(self.samples[0], latitude=91)]
-        with self.assertRaises(ValueError):
-            build_gpx(self.ride, bad_samples)
+    def test_skips_invalid_coordinates_and_exports_remaining_samples(self):
+        samples = [
+            dict(self.samples[0], latitude=91),
+            dict(self.samples[0], latitude=float('nan')),
+            dict(self.samples[0], timestamp='2026-10-17T10:00:02+00:00'),
+        ]
+
+        with mock.patch('cycling_tracker.export.gpx.Logger.warning') as warning:
+            root = ET.fromstring(build_gpx(self.ride, samples))
+
+        points = root.findall(f'.//{{{GPX_NS}}}trkpt')
+        self.assertEqual(len(points), 1)
+        self.assertEqual(points[0].attrib['lat'], '51.5000000')
+        self.assertEqual(warning.call_count, 2)
+
+    def test_omits_invalid_sample_and_timed_heart_rates(self):
+        samples = [
+            dict(self.samples[0], heart_rate=300),
+            dict(self.samples[0], timestamp='2026-10-17T10:00:02+00:00'),
+        ]
+        heart_rate_samples = [{
+            'timestamp': '2026-10-17T10:00:02+00:00',
+            'heart_rate': 0,
+        }]
+
+        with mock.patch('cycling_tracker.export.gpx.Logger.warning') as warning:
+            root = ET.fromstring(
+                build_gpx(self.ride, samples, heart_rate_samples)
+            )
+
+        points = root.findall(f'.//{{{GPX_NS}}}trkpt')
+        self.assertEqual(len(points), 2)
+        self.assertTrue(all(
+            point.find(f'{{{GPX_NS}}}extensions') is None
+            for point in points
+        ))
+        self.assertEqual(warning.call_count, 2)
 
     def test_rejects_timestamp_without_timezone(self):
         bad_samples = [dict(self.samples[0], timestamp='2026-10-17T10:00:01')]
