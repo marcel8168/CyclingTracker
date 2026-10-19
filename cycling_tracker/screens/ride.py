@@ -6,12 +6,15 @@ Controls: start/pause/resume/stop ride.
 """
 
 from kivy.app import App
+from kivy.clock import Clock
 from kivy.logger import Logger
 from kivy.properties import StringProperty, BooleanProperty, ObjectProperty
 from kivy.uix.screenmanager import Screen
 
 class RideScreen(Screen):
     """Live ride recording screen."""
+
+    _toggle_pending = False
 
     # Display properties bound in KV
     elapsed_text = StringProperty('00:00:00')
@@ -54,6 +57,12 @@ class RideScreen(Screen):
 
     def toggle_ride(self):
         """Primary button action: start / pause / resume."""
+        if self._toggle_pending:
+            Logger.debug('RideScreen: ignoring duplicate ride-button activation')
+            return
+        self._toggle_pending = True
+        Clock.schedule_once(self._reset_toggle_pending, 0.4)
+
         app = App.get_running_app()
         rm = self.ride_manager
 
@@ -77,6 +86,9 @@ class RideScreen(Screen):
 
         elif rm.state == 'paused':
             rm.resume()
+
+    def _reset_toggle_pending(self, _dt):
+        self._toggle_pending = False
 
     def stop_ride(self):
         """Stop and finish the current ride."""

@@ -246,6 +246,7 @@ class RideManager(EventDispatcher):
         """Refresh live metrics from samples written by the Android service."""
         if self.state != 'recording':
             return
+        self._capture_elapsed()
         ride = self.db.get_ride(self.ride_id)
         if ride is None or ride['status'] != 'active':
             return

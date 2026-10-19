@@ -10,7 +10,7 @@ import pytest
 from cycling_tracker.export.gpx import (
     GPX_NS,
     GPXTPX_NS,
-    _signed_byte_chunks,
+    _byte_chunks,
     build_gpx,
     publish_gpx,
 )
@@ -110,11 +110,16 @@ def test_rejects_timestamp_without_timezone(ride_and_samples):
         build_gpx(ride, bad_samples)
 
 
-def test_signed_byte_chunks_convert_utf8_document_without_materializing_list():
+def test_byte_chunks_preserve_document_bytes_without_materializing_list():
     document = b'\x00\x7f\x80\xff'
-    chunks = list(_signed_byte_chunks(document, chunk_size=2))
+    chunks = list(_byte_chunks(document, chunk_size=2))
 
-    assert chunks == [[0, 127], [-128, -1]]
+    assert chunks == [b'\x00\x7f', b'\x80\xff']
+
+
+class FakeJavaInteger:
+    def __init__(self, value):
+        self.value = value
 
 
 def test_android_10_export_is_published_to_downloads(ride_and_samples):
@@ -134,11 +139,9 @@ def test_android_10_export_is_published_to_downloads(ride_and_samples):
         'android.os.Build$VERSION': types.SimpleNamespace(SDK_INT=29),
         'android.content.ContentValues': content_values,
         'android.provider.MediaStore$Downloads': downloads,
+        'java.lang.Integer': FakeJavaInteger,
     }
     java_module = types.ModuleType('jnius')
-    java_module.Array = lambda _type, data: bytes(
-        byte if byte >= 0 else byte + 256 for byte in data
-    )
     java_module.autoclass = lambda name: classes[name]
 
     with (
@@ -152,7 +155,7 @@ def test_android_10_export_is_published_to_downloads(ride_and_samples):
         '_display_name', 'CyclingTracker-ride-7.gpx'
     )
     values.put.assert_any_call('relative_path', 'Download/CyclingTracker')
-    values.put.assert_any_call('is_pending', 1)
+    assert values.put.call_args_list[3].args[1].value == 1
     resolver.insert.assert_called_once_with('downloads-uri', values)
     resolver.openOutputStream.assert_called_once_with(
         'content://downloads/ride-7'
@@ -163,7 +166,7 @@ def test_android_10_export_is_published_to_downloads(ride_and_samples):
     stream.flush.assert_called_once()
     stream.close.assert_called_once()
     resolver.update.assert_called_once()
-    published_values.put.assert_called_once_with('is_pending', 0)
+    assert published_values.put.call_args.args[1].value == 0
     resolver.delete.assert_not_called()
 
 
@@ -183,11 +186,9 @@ def test_android_export_deletes_entry_when_output_stream_cannot_be_opened(
         'android.os.Build$VERSION': types.SimpleNamespace(SDK_INT=29),
         'android.content.ContentValues': mock.Mock(return_value=values),
         'android.provider.MediaStore$Downloads': downloads,
+        'java.lang.Integer': FakeJavaInteger,
     }
     java_module = types.ModuleType('jnius')
-    java_module.Array = lambda _type, data: bytes(
-        byte if byte >= 0 else byte + 256 for byte in data
-    )
     java_module.autoclass = lambda name: classes[name]
 
     with (
@@ -218,11 +219,9 @@ def test_android_export_deletes_entry_when_write_fails(ride_and_samples):
         'android.os.Build$VERSION': types.SimpleNamespace(SDK_INT=29),
         'android.content.ContentValues': mock.Mock(return_value=values),
         'android.provider.MediaStore$Downloads': downloads,
+        'java.lang.Integer': FakeJavaInteger,
     }
     java_module = types.ModuleType('jnius')
-    java_module.Array = lambda _type, data: bytes(
-        byte if byte >= 0 else byte + 256 for byte in data
-    )
     java_module.autoclass = lambda name: classes[name]
 
     with (
@@ -255,11 +254,9 @@ def test_android_export_deletes_entry_when_publish_update_fails(
         'android.os.Build$VERSION': types.SimpleNamespace(SDK_INT=29),
         'android.content.ContentValues': mock.Mock(return_value=values),
         'android.provider.MediaStore$Downloads': downloads,
+        'java.lang.Integer': FakeJavaInteger,
     }
     java_module = types.ModuleType('jnius')
-    java_module.Array = lambda _type, data: bytes(
-        byte if byte >= 0 else byte + 256 for byte in data
-    )
     java_module.autoclass = lambda name: classes[name]
 
     with (

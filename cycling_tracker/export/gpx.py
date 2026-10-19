@@ -135,11 +135,10 @@ def export_gpx(ride, samples, heart_rate_samples=(), path=None):
     return path
 
 
-def _signed_byte_chunks(document, chunk_size=64 * 1024):
-    """Yield signed-byte chunks for Android OutputStream writes."""
+def _byte_chunks(document, chunk_size=64 * 1024):
+    """Yield byte chunks for Android OutputStream writes."""
     for offset in range(0, len(document), chunk_size):
-        chunk = document[offset:offset + chunk_size]
-        yield [byte if byte < 128 else byte - 256 for byte in chunk]
+        yield document[offset:offset + chunk_size]
 
 
 def publish_gpx(ride, samples, heart_rate_samples=(), app=None):
@@ -150,7 +149,7 @@ def publish_gpx(ride, samples, heart_rate_samples=(), app=None):
         return export_gpx(ride, samples, heart_rate_samples)
 
     document = build_gpx(ride, samples, heart_rate_samples)
-    from jnius import Array, autoclass
+    from jnius import autoclass
 
     PythonActivity = autoclass('org.kivy.android.PythonActivity')
     context = app or PythonActivity.mActivity
@@ -163,7 +162,8 @@ def publish_gpx(ride, samples, heart_rate_samples=(), app=None):
         values.put('_display_name', filename)
         values.put('mime_type', 'application/gpx+xml')
         values.put('relative_path', 'Download/CyclingTracker')
-        values.put('is_pending', 1)
+        Integer = autoclass('java.lang.Integer')
+        values.put('is_pending', Integer(1))
         resolver = context.getContentResolver()
         uri = resolver.insert(MediaStoreDownloads.EXTERNAL_CONTENT_URI, values)
         if uri is None:
@@ -173,13 +173,13 @@ def publish_gpx(ride, samples, heart_rate_samples=(), app=None):
             if stream is None:
                 raise OSError('Android could not open the exported GPX file')
             try:
-                for signed_chunk in _signed_byte_chunks(document):
-                    stream.write(Array('b', signed_chunk))
+                for chunk in _byte_chunks(document):
+                    stream.write(chunk)
                 stream.flush()
             finally:
                 stream.close()
             published_values = ContentValues()
-            published_values.put('is_pending', 0)
+            published_values.put('is_pending', Integer(0))
             if resolver.update(uri, published_values, None, None) == 0:
                 raise OSError('Android could not publish the GPX file')
         except Exception:

@@ -58,6 +58,10 @@ def test_scan_filters_for_heart_rate_service(monkeypatch):
         def __init__(self, value):
             self.value = value
 
+    class FakeScanCallback:
+        def __init__(self, listener):
+            self.listener = listener
+
     class FakeContext:
         BLUETOOTH_SERVICE = 'bluetooth'
 
@@ -78,6 +82,8 @@ def test_scan_filters_for_heart_rate_service(monkeypatch):
         'android.os.ParcelUuid': FakeParcelUuid,
         'java.util.UUID': FakeUuid,
         'java.util.ArrayList': FakeArrayList,
+        'org.cyclingtracker.cyclingtracker.CyclingTrackerScanCallback':
+            FakeScanCallback,
     }[name]
     fake_jnius.PythonJavaClass = object
     fake_jnius.java_method = lambda _signature: lambda method: method
@@ -108,11 +114,41 @@ def test_scan_filters_for_heart_rate_service(monkeypatch):
     )
     assert scanner.settings == 'scan-settings'
     assert scanner.callback is monitor._scan_callback
+    scanner.callback.listener.onScanResult('sensor', 'Heart-rate strap')
+    assert monitor.devices == [{
+        'address': 'sensor',
+        'name': 'Heart-rate strap',
+    }]
+    scanner.callback.listener.onScanFailed(2)
+    assert monitor.status == 'Bluetooth scan failed (2)'
     monitor.stop_scan()
     assert monitor._scan_timeout_event is None
     assert monitor._scanner is None
     assert scanner.stopped
     timeout_event.cancel.assert_called_once_with()
+
+
+def test_callback_listener_handles_callback_exceptions():
+    class FakeJavaClass:
+        pass
+
+    def fake_java_method(_signature):
+        def decorator(fn):
+            return fn
+        return decorator
+
+    monitor = HeartRateMonitor(dispatch=lambda callback: callback())
+    monitor._on_measurement = Mock(side_effect=RuntimeError('boom'))
+
+    listener = hr_monitor._create_callback_listener(
+        monitor,
+        FakeJavaClass,
+        fake_java_method,
+    )
+
+    listener.onHeartRate(44)
+
+    monitor._on_measurement.assert_called_once_with(44)
 
 
 def _connect_with_api_level(api_level):
@@ -132,6 +168,10 @@ def _connect_with_api_level(api_level):
             self.callback = callback
             self.gatt = FakeGatt()
             return self.gatt
+
+    class FakeGattCallback:
+        def __init__(self, listener):
+            self.listener = listener
 
     device = FakeDevice()
     manager = types.SimpleNamespace(
@@ -155,6 +195,8 @@ def _connect_with_api_level(api_level):
         'android.bluetooth.BluetoothDevice': types.SimpleNamespace(
             TRANSPORT_LE=2
         ),
+        'org.cyclingtracker.cyclingtracker.CyclingTrackerGattCallback':
+            FakeGattCallback,
     }[name]
     fake_jnius.PythonJavaClass = object
     fake_jnius.java_method = lambda _signature: lambda method: method
@@ -184,15 +226,7 @@ def test_connect_releases_previous_gatt_and_uses_api_specific_callback(
     assert connected
     assert previous_gatt.disconnected
     assert previous_gatt.closed
-    if api_level >= 33:
-        device.callback.onCharacteristicChanged(
-            device.gatt, None, bytes([0x00, 146])
-        )
-    else:
-        characteristic = types.SimpleNamespace(
-            getValue=lambda: bytes([0x00, 146])
-        )
-        device.callback.onCharacteristicChanged(device.gatt, characteristic)
+    device.callback.listener.onHeartRate(146)
 
     assert measurements == [146]
 
@@ -239,7 +273,7 @@ def test_disconnection_closes_active_gatt():
     monitor._gatt_callback = object()
     monitor._connected_address = 'sensor'
 
-    monitor._on_disconnected(gatt, 0)
+    monitor._on_disconnected(0)
 
     assert gatt.closed
     assert monitor._gatt is None

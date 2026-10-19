@@ -15,6 +15,9 @@ source.dir = .
 # (list) Source files to include (let empty to include all)
 source.include_exts = py,png,jpg,kv,atlas,json
 
+# Keep the local Kivy test doubles from shadowing the packaged Kivy runtime.
+source.exclude_dirs = kivy
+
 # (str) Application versioning
 version = 0.1.0
 
@@ -61,7 +64,7 @@ android.archs = arm64-v8a,armeabi-v7a
 #android.add_aars =
 
 # (list) Android additional Java classes to include
-#android.add_src =
+android.add_src = %(source.dir)s/android/src
 
 # (bool) Enable AndroidX support
 android.enable_androidx = True
@@ -74,12 +77,12 @@ android.entrypoint = org.kivy.android.PythonActivity
 
 # (list) Android services
 # Format: name:entrypoint_python_file[:foreground][:sticky]
-# The service attaches its own notification and calls startForeground(..., LOCATION)
-# so Android 8.0+ / 14+ accepts the lifecycle without crashing.
-android.services = Ride:cycling_tracker/services/ride_service.py:foreground:sticky
+# Start as a foreground service so Android keeps the GPS/BLE recorder alive.
+services = Ride:cycling_tracker/services/ride_service.py:sticky
+p4a.hook = %(source.dir)s/cycling_tracker/android_build.py
 
 # (str) Android logcat filters to use
-android.logcat_filters = *:S python:D
+android.logcat_filters = *:S python:D AndroidRuntime:E ActivityManager:W BluetoothGatt:E BluetoothLeScanner:E CyclingTrackerGattCallback:I
 
 # (bool) Copy library instead of making a libpymodules.so
 # android.copy_libs = 1

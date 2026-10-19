@@ -16,30 +16,23 @@ from cycling_tracker.models.database import Database
 class _LocationListener:
     """Create and retain the Java LocationListener used by Android."""
 
-    def __new__(cls, on_location, PythonJavaClass, java_method):
-        class Listener(PythonJavaClass):
-            __javainterfaces__ = ['android/location/LocationListener']
+    def __new__(cls, on_location, PythonJavaClass, java_method, autoclass):
+        class Callback(PythonJavaClass):
+            __javainterfaces__ = [
+                'org/cyclingtracker/cyclingtracker/LocationCallbackListener'
+            ]
             __javacontext__ = 'app'
 
             @java_method('(Landroid/location/Location;)V')
-            def onLocationChanged(self, location):
+            def onLocation(self, location):
                 on_location(location)
 
-            @java_method(
-                '(Ljava/lang/String;ILandroid/os/Bundle;)V'
-            )
-            def onStatusChanged(self, _provider, _status, _extras):
-                pass
-
-            @java_method('(Ljava/lang/String;)V')
-            def onProviderEnabled(self, _provider):
-                Logger.info('RideService: GPS provider enabled')
-
-            @java_method('(Ljava/lang/String;)V')
-            def onProviderDisabled(self, _provider):
-                Logger.warning('RideService: GPS provider disabled')
-
-        return Listener()
+        callback = Callback()
+        Bridge = autoclass(
+            'org.cyclingtracker.cyclingtracker.'
+            'CyclingTrackerLocationListener'
+        )
+        return Bridge(callback), callback
 
 
 def _record_location(db, ride_id, location, previous):
@@ -62,7 +55,7 @@ def _record_location(db, ride_id, location, previous):
         if delta < 500:
             distance_total += delta
 
-    timestamp = datetime.now(timezone.utc).isoformat()
+    timestamp = location.get('timestamp') or datetime.now(timezone.utc).isoformat()
     db.insert_sample(
         ride_id,
         latitude=lat,
@@ -77,6 +70,26 @@ def _record_location(db, ride_id, location, previous):
     db.conn.commit()
     Logger.debug(f'RideService: recorded GPS fix for ride {ride_id}')
     return distance_total, lat, lon
+
+
+def _subscribe_to_location(manager, location_manager, listener, looper):
+    providers = (
+        location_manager.GPS_PROVIDER,
+        location_manager.NETWORK_PROVIDER,
+    )
+    enabled_providers = [
+        provider for provider in providers
+        if manager.isProviderEnabled(provider)
+    ]
+    if not enabled_providers:
+        raise RuntimeError('No enabled Android location providers')
+
+    callback_looper = looper.getMainLooper()
+    for provider in enabled_providers:
+        manager.requestLocationUpdates(
+            provider, 1000, 2.0, listener, callback_looper
+        )
+    return enabled_providers
 
 
 def _record_heart_rate(db, ride_id, measurement):
@@ -140,23 +153,31 @@ def _start_foreground_notification(service, Context):
     Logger.info('RideService: foreground notification started')
 
 
-def main():
-    """Run until the active ride ends or Android stops this service."""
+def _run_service():
     if platform != 'android':
-        Logger.warning('RideService: Android foreground service only')
-        return
+        raise RuntimeError(
+            f'RideService requires Android, got platform={platform!r}'
+        )
 
+    Logger.info('RideService: entrypoint reached')
     from jnius import autoclass, PythonJavaClass, java_method
 
     PythonService = autoclass('org.kivy.android.PythonService')
     service = PythonService.mService
+    if service is None:
+        raise RuntimeError('Android PythonService.mService is unavailable')
+    Logger.info('RideService: Android service reference obtained')
     LocationManager = autoclass('android.location.LocationManager')
+    Looper = autoclass('android.os.Looper')
     Context = autoclass('android.content.Context')
     _start_foreground_notification(service, Context)
+    Logger.info('RideService: foreground promotion completed')
     manager = service.getSystemService(Context.LOCATION_SERVICE)
     db = Database()
     db.open()
+    Logger.info('RideService: database opened')
     listener = None
+    listener_callback = None
     heart_rate_monitor = None
     wake_lock = None
     ride_id = None
@@ -173,13 +194,17 @@ def main():
             altitude = float(location.getAltitude())
             speed = float(location.getSpeed())
             bearing = float(location.getBearing())
+            accuracy = float(location.getAccuracy())
+            Logger.info(
+                f'RideService: received GPS fix accuracy={accuracy:.1f}m'
+            )
             location_queue.put({
                 'latitude': float(location.getLatitude()),
                 'longitude': float(location.getLongitude()),
                 'altitude': altitude if math.isfinite(altitude) else None,
                 'speed': max(0.0, speed) if math.isfinite(speed) else 0.0,
                 'bearing': bearing if math.isfinite(bearing) else None,
-                'accuracy': float(location.getAccuracy()),
+                'accuracy': accuracy,
                 'timestamp': timestamp,
             })
         except Exception:
@@ -220,11 +245,16 @@ def main():
                 float(last['longitude']),
             )
 
-        listener = _LocationListener(on_location, PythonJavaClass, java_method)
-        manager.requestLocationUpdates(
-            LocationManager.GPS_PROVIDER, 1000, 2.0, listener
+        listener, listener_callback = _LocationListener(
+            on_location, PythonJavaClass, java_method, autoclass
         )
-        Logger.info(f'RideService: GPS foreground tracking started for {ride_id}')
+        providers = _subscribe_to_location(
+            manager, LocationManager, listener, Looper
+        )
+        Logger.info(
+            f'RideService: location tracking started for {ride_id} '
+            f'using {providers}'
+        )
 
         while True:
             active = db.get_ride(ride_id)
@@ -273,6 +303,15 @@ def main():
                 Logger.exception('RideService: could not release wake lock')
         db.close()
         Logger.info('RideService: stopped')
+
+
+def main():
+    """Start the Android recorder and report startup failures explicitly."""
+    try:
+        _run_service()
+    except Exception as exc:
+        Logger.exception(f'RideService: service process failed: {exc}')
+        raise
 
 
 if __name__ == '__main__':

@@ -113,6 +113,26 @@ def test_flush_progress_does_not_overwrite_android_service_progress(
     assert database.get_ride(ride_id)['total_elapsed_s'] == 12
 
 
+def test_android_sync_updates_elapsed_time_from_monotonic_clock(
+    ride_manager, monkeypatch
+):
+    manager, _timers = ride_manager
+    monkeypatch.setattr(ride_manager_module, 'platform', 'android')
+    monkeypatch.setattr(
+        ride_manager_module.time, 'monotonic', Mock(side_effect=[100, 103])
+    )
+    monkeypatch.setattr(
+        manager.service, 'start',
+        lambda: setattr(manager.service, 'running', True),
+    )
+
+    manager.start()
+    manager._sync_android_service(1)
+
+    assert manager.elapsed_seconds == 3
+    assert manager.elapsed_text == '00:00:03'
+
+
 def test_close_releases_ui_resources_without_finishing_ride(
     ride_manager, database, monkeypatch
 ):

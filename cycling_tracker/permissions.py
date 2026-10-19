@@ -6,6 +6,7 @@ On non-Android platforms, all permissions are reported as granted
 to allow desktop development and testing.
 """
 
+from kivy.clock import Clock
 from kivy.logger import Logger
 from kivy.utils import platform
 
@@ -95,6 +96,15 @@ class PermissionManager:
 
     def _on_permissions_result(self, permissions, grant_results):
         """Callback after the user responds to the permission dialog."""
+        Clock.schedule_once(
+            lambda _dt: self._handle_permissions_result(
+                permissions, grant_results
+            ),
+            0,
+        )
+
+    def _handle_permissions_result(self, permissions, grant_results):
+        """Apply permission results on Kivy's main thread."""
         Logger.info(f'PermissionManager: result — {list(zip(permissions, grant_results))}')
         self.refresh_status()
 
@@ -144,6 +154,15 @@ class PermissionManager:
 
     def _on_bg_location_result(self, permissions, grant_results):
         """Callback for background-location permission."""
+        Clock.schedule_once(
+            lambda _dt: self._handle_bg_location_result(
+                permissions, grant_results
+            ),
+            0,
+        )
+
+    def _handle_bg_location_result(self, permissions, grant_results):
+        """Apply background-location results on Kivy's main thread."""
         Logger.info(f'PermissionManager: bg location result — {list(zip(permissions, grant_results))}')
         self.refresh_status()
 

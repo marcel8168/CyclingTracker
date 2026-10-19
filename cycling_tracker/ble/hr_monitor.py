@@ -15,6 +15,87 @@ HEART_RATE_MEASUREMENT_UUID = '00002a37-0000-1000-8000-00805f9b34fb'
 CLIENT_CHARACTERISTIC_CONFIG_UUID = '00002902-0000-1000-8000-00805f9b34fb'
 
 
+def _create_callback_listener(monitor, PythonJavaClass, java_method):
+    class CallbackListener(PythonJavaClass):
+        __javainterfaces__ = [
+            'org/cyclingtracker/cyclingtracker/BleCallbackListener'
+        ]
+        __javacontext__ = 'app'
+
+        @java_method('(Ljava/lang/String;Ljava/lang/String;)V')
+        def onScanResult(self, address, name):
+            try:
+                monitor._dispatch(
+                    lambda: monitor._add_device(address, name)
+                )
+            except Exception:
+                Logger.exception('HeartRateMonitor: scan-result callback failed')
+
+        @java_method('(I)V')
+        def onScanFailed(self, error_code):
+            try:
+                monitor._dispatch(
+                    lambda: monitor._set_status(
+                        f'Bluetooth scan failed ({error_code})'
+                    )
+                )
+            except Exception:
+                Logger.exception('HeartRateMonitor: scan-failed callback failed')
+
+        @java_method(
+            '(II)V'
+        )
+        def onConnectionStateChange(self, status, new_state):
+            try:
+                monitor._dispatch(
+                    lambda: monitor._on_connection_state_change(
+                        status, new_state
+                    )
+                )
+            except Exception:
+                Logger.exception(
+                    'HeartRateMonitor: connection-state callback failed'
+                )
+
+        @java_method('(ILjava/lang/String;)V')
+        def onServicesDiscovered(self, status, message):
+            try:
+                monitor._dispatch(
+                    lambda: monitor._on_services_discovered(status, message)
+                )
+            except Exception:
+                Logger.exception(
+                    'HeartRateMonitor: service-discovery callback failed'
+                )
+
+        @java_method('(I)V')
+        def onDescriptorWrite(self, status):
+            try:
+                monitor._dispatch(
+                    lambda: monitor._on_descriptor_write(status)
+                )
+            except Exception:
+                Logger.exception('HeartRateMonitor: descriptor-write callback failed')
+
+        @java_method('(I)V')
+        def onHeartRate(self, bpm):
+            try:
+                monitor._dispatch(lambda: monitor._on_measurement(bpm))
+            except Exception:
+                Logger.exception('HeartRateMonitor: measurement callback failed')
+
+        @java_method('(Ljava/lang/String;)V')
+        def onError(self, message):
+            try:
+                monitor._dispatch(
+                    lambda: monitor._set_status(f'Bluetooth error: {message}')
+                )
+            except Exception:
+                Logger.exception('HeartRateMonitor: error callback failed')
+
+    return CallbackListener()
+
+
 def parse_heart_rate_measurement(data):
     """Decode the Heart Rate Measurement characteristic value."""
     if data is None or len(data) < 2:
@@ -40,8 +121,10 @@ class HeartRateMonitor:
         self.devices = []
         self._scanner = None
         self._scan_callback = None
+        self._scan_listener = None
         self._scan_timeout_event = None
         self._gatt_callback = None
+        self._gatt_listener = None
         self._gatt = None
         self._context = None
         self._connected_address = None
@@ -78,38 +161,14 @@ class HeartRateMonitor:
                 return False
             self._context = mActivity
             self.devices = []
-            monitor = self
-
-            class ScanCallback(PythonJavaClass):
-                __javainterfaces__ = ['android/bluetooth/le/ScanCallback']
-                __javacontext__ = 'app'
-
-                @java_method('(ILandroid/bluetooth/le/ScanResult;)V')
-                def onScanResult(self, _callback_type, result):
-                    device = result.getDevice()
-                    address = device.getAddress()
-                    name = device.getName()
-                    if address:
-                        monitor._dispatch(
-                            lambda: monitor._add_device(
-                                address, name or 'Heart-rate sensor'
-                            )
-                        )
-
-                @java_method('([Landroid/bluetooth/le/ScanResult;)V')
-                def onBatchScanResults(self, results):
-                    for result in results:
-                        self.onScanResult(0, result)
-
-                @java_method('(I)V')
-                def onScanFailed(self, error_code):
-                    monitor._dispatch(
-                        lambda: monitor._set_status(
-                            f'Bluetooth scan failed ({error_code})'
-                        )
-                    )
-
-            self._scan_callback = ScanCallback()
+            self._scan_listener = _create_callback_listener(
+                self, PythonJavaClass, java_method
+            )
+            ScanCallback = autoclass(
+                'org.cyclingtracker.cyclingtracker.'
+                'CyclingTrackerScanCallback'
+            )
+            self._scan_callback = ScanCallback(self._scan_listener)
             self._scanner = adapter.getBluetoothLeScanner()
             if self._scanner is None:
                 self._set_status('Bluetooth LE scanner is unavailable')
@@ -144,6 +203,7 @@ class HeartRateMonitor:
                 Logger.warning(f'HeartRateMonitor: stop scan failed: {exc}')
         self._scanner = None
         self._scan_callback = None
+        self._scan_listener = None
         if self.status.startswith('Scanning'):
             self._set_status('No heart-rate sensor found' if not self.devices else
                              'Select a heart-rate sensor')
@@ -160,128 +220,21 @@ class HeartRateMonitor:
             if self._gatt is not None:
                 self.disconnect()
             Context = autoclass('android.content.Context')
-            Build = autoclass('android.os.Build')
             if context is not None:
                 self._context = context
             if self._context is None:
                 raise RuntimeError('Bluetooth context is unavailable; scan first')
             manager = self._context.getSystemService(Context.BLUETOOTH_SERVICE)
             device = manager.getAdapter().getRemoteDevice(address)
-            monitor = self
-
-            class GattCallback(PythonJavaClass):
-                __javainterfaces__ = ['android/bluetooth/BluetoothGattCallback']
-                __javacontext__ = 'app'
-
-                @java_method(
-                    '(Landroid/bluetooth/BluetoothGatt;II)V'
-                )
-                def onConnectionStateChange(self, gatt, status, new_state):
-                    BluetoothProfile = autoclass(
-                        'android.bluetooth.BluetoothProfile'
-                    )
-                    if status == 0 and new_state == BluetoothProfile.STATE_CONNECTED:
-                        monitor._dispatch(
-                            lambda: monitor._set_status(
-                                'Connected; discovering service'
-                            )
-                        )
-                        gatt.discoverServices()
-                    else:
-                        monitor._dispatch(
-                            lambda: monitor._on_disconnected(gatt, status)
-                        )
-
-                @java_method('(Landroid/bluetooth/BluetoothGatt;I)V')
-                def onServicesDiscovered(self, gatt, status):
-                    if status != 0:
-                        monitor._dispatch(
-                            lambda: monitor._set_status(
-                                f'Service discovery failed ({status})'
-                            )
-                        )
-                        return
-                    service = gatt.getService(
-                        autoclass('java.util.UUID').fromString(
-                            HEART_RATE_SERVICE_UUID
-                        )
-                    )
-                    if service is None:
-                        monitor._dispatch(
-                            lambda: monitor._set_status(
-                                'Device does not provide Heart Rate Service'
-                            )
-                        )
-                        return
-                    characteristic = service.getCharacteristic(
-                        autoclass('java.util.UUID').fromString(
-                            HEART_RATE_MEASUREMENT_UUID
-                        )
-                    )
-                    if characteristic is None or not gatt.setCharacteristicNotification(
-                        characteristic, True
-                    ):
-                        monitor._dispatch(
-                            lambda: monitor._set_status(
-                                'Could not subscribe to heart-rate measurements'
-                            )
-                        )
-                        return
-                    descriptor = characteristic.getDescriptor(
-                        autoclass('java.util.UUID').fromString(
-                            CLIENT_CHARACTERISTIC_CONFIG_UUID
-                        )
-                    )
-                    if descriptor is None:
-                        monitor._dispatch(
-                            lambda: monitor._set_status(
-                                'Heart-rate notification descriptor is missing'
-                            )
-                        )
-                        return
-                    from jnius import Array
-                    descriptor.setValue(Array('b', [1, 0]))
-                    if not gatt.writeDescriptor(descriptor):
-                        monitor._dispatch(
-                            lambda: monitor._set_status(
-                                'Could not enable heart-rate notifications'
-                            )
-                        )
-
-                @java_method(
-                    '(Landroid/bluetooth/BluetoothGatt;'
-                    'Landroid/bluetooth/BluetoothGattDescriptor;I)V'
-                )
-                def onDescriptorWrite(self, _gatt, _descriptor, status):
-                    message = (
-                        'Connected' if status == 0
-                        else f'Notification setup failed ({status})'
-                    )
-                    monitor._dispatch(
-                        lambda: monitor._set_status(message)
-                    )
-
-                if Build.VERSION.SDK_INT >= 33:
-                    @java_method(
-                        '(Landroid/bluetooth/BluetoothGatt;'
-                        'Landroid/bluetooth/BluetoothGattCharacteristic;[B)V'
-                    )
-                    def onCharacteristicChanged(
-                        self, _gatt, _characteristic, data
-                    ):
-                        monitor._on_characteristic_changed(data)
-                else:
-                    @java_method(
-                        '(Landroid/bluetooth/BluetoothGatt;'
-                        'Landroid/bluetooth/BluetoothGattCharacteristic;)V'
-                    )
-                    def onCharacteristicChanged(self, _gatt, characteristic):
-                        monitor._on_characteristic_changed(
-                            characteristic.getValue()
-                        )
-
             self._connected_address = address
-            self._gatt_callback = GattCallback()
+            self._gatt_listener = _create_callback_listener(
+                self, PythonJavaClass, java_method
+            )
+            GattCallback = autoclass(
+                'org.cyclingtracker.cyclingtracker.'
+                'CyclingTrackerGattCallback'
+            )
+            self._gatt_callback = GattCallback(self._gatt_listener)
             BluetoothDevice = autoclass('android.bluetooth.BluetoothDevice')
             self._gatt = device.connectGatt(
                 self._context, False, self._gatt_callback,
@@ -303,6 +256,7 @@ class HeartRateMonitor:
             self._release_gatt(self._gatt, disconnect=True)
         self._gatt = None
         self._gatt_callback = None
+        self._gatt_listener = None
         self._connected_address = None
         self._set_status('Disconnected')
 
@@ -331,15 +285,43 @@ class HeartRateMonitor:
             return
         self._dispatch(lambda: self._on_measurement(bpm))
 
-    def _on_disconnected(self, gatt, status):
-        if self._gatt is gatt:
-            self._release_gatt(gatt)
+    def _on_connection_state_change(self, status, new_state):
+        Logger.info(
+            'HeartRateMonitor: GATT connection callback '
+            f'status={status} state={new_state}'
+        )
+        if status == 0 and new_state == 2:
+            self._set_status('Connected; discovering service')
+        elif new_state == 0:
+            self._on_disconnected(status)
+
+    def _on_services_discovered(self, status, message):
+        Logger.info(
+            'HeartRateMonitor: GATT service discovery '
+            f'status={status} message={message}'
+        )
+        if status != 0:
+            self._set_status(f'Service discovery failed ({status})')
+        elif message:
+            self._set_status(message)
+
+    def _on_descriptor_write(self, status):
+        Logger.info(f'HeartRateMonitor: notification descriptor status={status}')
+        self._set_status(
+            'Connected' if status == 0
+            else f'Notification setup failed ({status})'
+        )
+
+    def _on_disconnected(self, status):
+        if self._gatt is not None:
+            self._release_gatt(self._gatt)
             self._gatt = None
             self._gatt_callback = None
+            self._gatt_listener = None
             self._connected_address = None
-            self._set_status(
-                'Disconnected' if status == 0 else f'Disconnected ({status})'
-            )
+        self._set_status(
+            'Disconnected' if status == 0 else f'Disconnected ({status})'
+        )
 
     @staticmethod
     def _release_gatt(gatt, disconnect=False):

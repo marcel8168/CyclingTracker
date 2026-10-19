@@ -28,4 +28,5 @@ class StringProperty(_Property):
     pass
 
 class ObjectProperty(_Property):
-    pass
+    def __init__(self, default=None, allownone=False):
+        super().__init__(default)

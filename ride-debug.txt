@@ -1,0 +1,657 @@
+--------- beginning of main
+10-19 23:17:21.184 I/adbd    (16421): adbd service requested 'shell,v2,TERM=xterm-256color:export ANDROID_LOG_TAGS="''"; exec logcat '-v' 'time''
+10-19 23:17:21.780 I/WifiHAL ( 1122): Creating message to get link statistics; iface = 48
+10-19 23:17:21.910 E/libbinder.IPCThreadState( 1122): binder thread pool (1 threads) starved for 129 ms
+10-19 23:17:22.958 D/AOC     ( 1352): A3:MSG: lsm6dsr_device.cc, 763: USF: Lsm6dsrDevice: Sensor 3: Enabled 0, odr_index 0.
+10-19 23:17:22.958 D/AOC     ( 1352): A3:MSG: lsm6dsr_fifo.cc, 750: USF: Lsm6dsrFifo: ODR: XL/G/T/TS: 104/52/13/13 WM: 3 Intr: 61.
+10-19 23:17:22.959 D/AOC     ( 1352): A3:MSG: lsm6dsr_device.cc, 671: USF: Lsm6dsrDevice: Fifo was disabled for 566162ns.
+10-19 23:17:22.959 D/AOC     ( 1352): A3:MSG: usf_sensor.cc, 1581: USF: Received stop sampling request for LSM6DSR Motion Detect (active:-1).
+10-19 23:17:22.960 D/AOC     ( 1352): A3:MSG: usf_sensor.cc, 2037: USF: Sampling configuration 2559 not found.
+10-19 23:17:22.960 D/AOC     ( 1352): A3:MSG: usf_sensor.cc, 1581: USF: Received stop sampling request for LSM6DSR Motion Detect (active:-1).
+10-19 23:17:22.960 D/AOC     ( 1352): A3:MSG: usf_sensor_client.cc, 145: USF: Received kErrNotFound when disabling one shot sensor.
+10-19 23:17:22.960 D/AOC     ( 1352): A3:MSG: usf_sensor.cc, 2037: USF: Sampling configuration 2557 not found.
+10-19 23:17:22.960 D/AOC     ( 1352): A3:MSG: vsc_controller.cc, 550: VSC: [Step Counter] stopSensorEvents: sensor 0x20002
+10-19 23:17:22.961 D/AOC     ( 1352): A3:MSG: usf_sensor_client.cc, 161: USF: Received kErrNotFound when disabling one shot sensor.
+10-19 23:17:22.961 D/AOC     ( 1352): A3:MSG: vsc_controller.cc, 532: VSC: [Step Counter] requestSensorEvents: sensor 0x10001, period=20 latency=1000ms.
+10-19 23:17:22.961 D/AOC     ( 1352): A3:MSG: usf_sensor.cc, 1573: USF: Received start sampling request for LSM6DSR Stationary Detect (active:1).
+10-19 23:17:22.962 D/AOC     ( 1352): A3:MSG: lsm6dsr_device.cc, 763: USF: Lsm6dsrDevice: Sensor 4: Enabled 1, odr_index 1.
+10-19 23:17:22.962 D/AOC     ( 1352): A3:MSG: lsm6dsr_fifo.cc, 750: USF: Lsm6dsrFifo: ODR: XL/G/T/TS: 104/52/13/13 WM: 3 Intr: 61.
+10-19 23:17:22.963 D/AOC     ( 1352): A3:MSG: lsm6dsr_device.cc, 671: USF: Lsm6dsrDevice: Fifo was disabled for 500244ns.
+10-19 23:17:22.963 D/AOC     ( 1352): A3:MSG: motion_state_sensor.cc, 327: USF: MoSt: StationaryDetect sampling started with sampling ID 2560.
+10-19 23:17:22.964 D/AOC     ( 1352): A3:MSG: usf_sensor.cc, 1573: USF: Received start sampling request for LSM6DSR Accelerometer (active:5).
+10-19 23:17:22.966 D/AOC     ( 1352): A3:MSG: vsc_controller.cc, 550: VSC: [Significant Motion] stopSensorEvents: sensor 0x20002
+10-19 23:17:22.966 D/AOC     ( 1352): A3:MSG: vsc_controller.cc, 532: VSC: [Significant Motion] requestSensorEvents: sensor 0x10001, period=20 latency=3200ms
+10-19 23:17:22.966 D/AOC     ( 1352): A3:MSG: usf_sensor.cc, 1573: USF: Received start sampling request for LSM6DSR Accelerometer (active:6).
+10-19 23:17:22.971 D/AOC     ( 1352): A3:MSG: usf_sensor.cc, 1573: USF: Received start sampling request for LSM6DSR FreeFall Detect (active:1).
+10-19 23:17:22.971 D/AOC     ( 1352): A3:MSG: lsm6dsr_device.cc, 763: USF: Lsm6dsrDevice: Sensor 5: Enabled 1, odr_index 1.
+10-19 23:17:22.972 D/AOC     ( 1352): A3:MSG: lsm6dsr_fifo.cc, 750: USF: Lsm6dsrFifo: ODR: XL/G/T/TS: 104/52/13/13 WM: 3 Intr: 61.
+10-19 23:17:22.972 D/AOC     ( 1352): A3:MSG: lsm6dsr_device.cc, 671: USF: Lsm6dsrDevice: Fifo was disabled for 362060ns.
+10-19 23:17:22.975 D/AOC     ( 1352): A3:MSG: usf_sensor.cc, 1573: USF: Received start sampling request for LSM6DSR Stationary Detect (active:2).
+10-19 23:17:22.976 D/AOC     ( 1352): A3:MSG: usf_sensor.cc, 1581: USF: Received stop sampling request for LSM6DSR Motion Detect (active:-1).
+10-19 23:17:22.976 D/AOC     ( 1352): A3:MSG: usf_sensor.cc, 2037: USF: Sampling configuration 2558 not found.
+10-19 23:17:22.977 D/AOC     ( 1352): A3:MSG: usf_sensor_client.cc, 145: USF: Received kErrNotFound when disabling one shot sensor.
+10-19 23:17:23.034 I/deeptouch( 2497): I0000 00:00:1792444643.034523    2525 tf_lite_classifier.cc:415] Event stream classified as kNone
+10-19 23:17:23.062 I/python  ( 9373): [INFO   ] [Database    ] opening /data/user/0/org.cyclingtracker.cyclingtracker/files/cyclingtracker.db
+10-19 23:17:23.069 D/AOC     ( 1352): A3:MSG: usf_sensor.cc, 1573: USF: Received start sampling request for LSM6DSR Gyroscope (active:2).
+10-19 23:17:23.070 D/AOC     ( 1352): A3:MSG: lsm6dsr_device.cc, 763: USF: Lsm6dsrDevice: Sensor 1: Enabled 1, odr_index 5.
+10-19 23:17:23.070 D/AOC     ( 1352): A3:MSG: lsm6dsr_fifo.cc, 750: USF: Lsm6dsrFifo: ODR: XL/G/T/TS: 104/208/13/26 WM: 6 Intr: 59.
+10-19 23:17:23.071 D/AOC     ( 1352): A3:MSG: lsm6dsr_device.cc, 671: USF: Lsm6dsrDevice: Fifo was disabled for 850830ns.
+10-19 23:17:23.073 D/AOC     ( 1352): A3:MSG: usf_sensor.cc, 1573: USF: Received start sampling request for Fusion Mag (active:2).
+10-19 23:17:23.073 D/AOC     ( 1352): A3:MSG: fusion_mag_sensor.cc, 672: USF: FMAG: Reconfig sampling: period(new/old) = 10/100ms, latency = 500ms.
+10-19 23:17:23.076 D/AOC     ( 1352): A3:MSG: usf_sensor.cc, 1573: USF: Received start sampling request for MMC56X3X Magnetometer 0 (active:2).
+10-19 23:17:23.076 D/AOC     ( 1352): A3:MSG: mmc56x3x_device.cc, 409: USF: MMC56X3X1: mmc56x3x_enable_measure odr = 100.
+10-19 23:17:23.077 D/AOC     ( 1352): A3:MSG: usf_sensor.cc, 1573: USF: Received start sampling request for MMC56X3X Magnetometer 1 (active:2).
+10-19 23:17:23.077 D/AOC     ( 1352): A3:MSG: mmc56x3x_device.cc, 409: USF: MMC56X3X2: mmc56x3x_enable_measure odr = 100.
+10-19 23:17:23.090 I/python  ( 9373): [INFO   ] [Database    ] schema version 4
+10-19 23:17:23.090 I/python  ( 9373): [INFO   ] [Database    ] created ride 1
+10-19 23:17:23.207 V/GrammaticalInflectionUtils( 1723): AttributionSource: android.content.AttributionSource@435ecc58 does not have READ_SYSTEM_GRAMMATICAL_GENDER permission.
+10-19 23:17:23.210 I/python  ( 9373): [INFO   ] [RecordingService] foreground service started
+10-19 23:17:23.211 I/python  ( 9373): [INFO   ] [RideManager ] ride 1 recording
+10-19 23:17:23.228 D/Zygote  ( 1043): Forked child process 9651
+--------- beginning of system
+10-19 23:17:23.228 I/ActivityManager( 1723): Start proc 9651:org.cyclingtracker.cyclingtracker:service_Ride/u0a10 for started-service {org.cyclingtracker.cyclingtracker/org.cyclingtracker.cyclingtracker.ServiceRide}
+10-19 23:17:23.237 I/libprocessgroup( 9651): Created cgroup /sys/fs/cgroup/apps/uid_10010/pid_9651
+10-19 23:17:23.248 I/Zygote  ( 9651): Process 9651 created for org.cyclingtracker.cyclingtracker:service_Ride
+10-19 23:17:23.248 I/er:service_Ride( 9651): Late-enabling -Xcheck:jni
+10-19 23:17:23.271 I/er:service_Ride( 9651): Using generational CollectorTypeCMC GC.
+10-19 23:17:23.276 I/adbd    (16421): jdwp connection from 9651
+10-19 23:17:23.279 D/nativeloader( 9651): Load libframework-connectivity-tiramisu-jni.so using APEX ns com_android_tethering for caller /apex/com.android.tethering/javalib/framework-connectivity-t.jar: ok
+10-19 23:17:23.295 D/CompatChangeReporter( 9651): Compat change id reported: 242716250; UID 10010; state: ENABLED
+10-19 23:17:23.315 D/nativeloader( 9651): Configuring clns-9 for other apk /data/app/~~TwGZxsncrkTfkAB6kcsPWQ==/org.cyclingtracker.cyclingtracker-Vx-ulEL_R85VsjGYE5lgvA==/base.apk. target_sdk_version=34, uses_libraries=, library_path=/data/app/~~TwGZxsncrkTfkAB6kcsPWQ==/org.cyclingtracker.cyclingtracker-Vx-ulEL_R85VsjGYE5lgvA==/lib/arm64:/data/app/~~TwGZxsncrkTfkAB6kcsPWQ==/org.cyclingtracker.cyclingtracker-Vx-ulEL_R85VsjGYE5lgvA==/base.apk!/lib/arm64-v8a, permitted_path=/data:/mnt/expand:/data/user/0/org.cyclingtracker.cyclingtracker
+10-19 23:17:23.323 D/ActivityThread( 9651): Set OS env TMPDIR to /data/user/0/org.cyclingtracker.cyclingtracker/cache
+10-19 23:17:23.324 V/GraphicsEnvironment( 9651): Currently set values for:
+10-19 23:17:23.324 V/GraphicsEnvironment( 9651):   angle_gl_driver_selection_pkgs=[com.android.angle]
+10-19 23:17:23.325 V/GraphicsEnvironment( 9651):   angle_gl_driver_selection_values=[angle]
+10-19 23:17:23.325 V/GraphicsEnvironment( 9651): org.cyclingtracker.cyclingtracker is not listed in per-application setting
+10-19 23:17:23.325 V/GraphicsEnvironment( 9651): No special selections for ANGLE, returning default driver choice
+10-19 23:17:23.325 V/GraphicsEnvironment( 9651): Neither updatable production driver nor prerelease driver is supported.
+10-19 23:17:23.336 V/pythonutil( 9651): Checking pattern libsqlite3\.so against libSDL2.so
+10-19 23:17:23.337 V/pythonutil( 9651): Checking pattern libsqlite3\.so against libSDL2_ttf.so
+10-19 23:17:23.337 V/pythonutil( 9651): Checking pattern libsqlite3\.so against libSDL2_mixer.so
+10-19 23:17:23.337 V/pythonutil( 9651): Checking pattern libsqlite3\.so against libssl1.1.so
+10-19 23:17:23.337 V/pythonutil( 9651): Checking pattern libsqlite3\.so against libpybundle.so
+10-19 23:17:23.337 V/pythonutil( 9651): Checking pattern libsqlite3\.so against libmain.so
+10-19 23:17:23.338 V/pythonutil( 9651): Checking pattern libsqlite3\.so against libpython3.11.so
+10-19 23:17:23.338 V/pythonutil( 9651): Checking pattern libsqlite3\.so against libcrypto1.1.so
+10-19 23:17:23.338 V/pythonutil( 9651): Checking pattern libsqlite3\.so against libffi.so
+10-19 23:17:23.338 V/pythonutil( 9651): Checking pattern libsqlite3\.so against libsqlite3.so
+10-19 23:17:23.338 V/pythonutil( 9651): Pattern libsqlite3\.so matched file libsqlite3.so
+10-19 23:17:23.338 V/pythonutil( 9651): Checking pattern libsqlite3\.so against libSDL2_image.so
+10-19 23:17:23.339 V/pythonutil( 9651): Checking pattern libffi\.so against libSDL2.so
+10-19 23:17:23.339 V/pythonutil( 9651): Checking pattern libffi\.so against libSDL2_ttf.so
+10-19 23:17:23.339 V/pythonutil( 9651): Checking pattern libffi\.so against libSDL2_mixer.so
+10-19 23:17:23.340 V/pythonutil( 9651): Checking pattern libffi\.so against libssl1.1.so
+10-19 23:17:23.340 V/pythonutil( 9651): Checking pattern libffi\.so against libpybundle.so
+10-19 23:17:23.340 V/pythonutil( 9651): Checking pattern libffi\.so against libmain.so
+10-19 23:17:23.341 V/pythonutil( 9651): Checking pattern libffi\.so against libpython3.11.so
+10-19 23:17:23.341 V/pythonutil( 9651): Checking pattern libffi\.so against libcrypto1.1.so
+10-19 23:17:23.342 V/pythonutil( 9651): Checking pattern libffi\.so against libffi.so
+10-19 23:17:23.342 V/pythonutil( 9651): Pattern libffi\.so matched file libffi.so
+10-19 23:17:23.342 V/pythonutil( 9651): Checking pattern libffi\.so against libsqlite3.so
+10-19 23:17:23.342 V/pythonutil( 9651): Checking pattern libffi\.so against libSDL2_image.so
+10-19 23:17:23.343 V/pythonutil( 9651): Checking pattern libpng16\.so against libSDL2.so
+10-19 23:17:23.343 V/pythonutil( 9651): Checking pattern libpng16\.so against libSDL2_ttf.so
+10-19 23:17:23.343 V/pythonutil( 9651): Checking pattern libpng16\.so against libSDL2_mixer.so
+10-19 23:17:23.343 V/pythonutil( 9651): Checking pattern libpng16\.so against libssl1.1.so
+10-19 23:17:23.343 V/pythonutil( 9651): Checking pattern libpng16\.so against libpybundle.so
+10-19 23:17:23.344 V/pythonutil( 9651): Checking pattern libpng16\.so against libmain.so
+10-19 23:17:23.344 V/pythonutil( 9651): Checking pattern libpng16\.so against libpython3.11.so
+10-19 23:17:23.344 V/pythonutil( 9651): Checking pattern libpng16\.so against libcrypto1.1.so
+10-19 23:17:23.345 V/pythonutil( 9651): Checking pattern libpng16\.so against libffi.so
+10-19 23:17:23.345 V/pythonutil( 9651): Checking pattern libpng16\.so against libsqlite3.so
+10-19 23:17:23.345 V/pythonutil( 9651): Checking pattern libpng16\.so against libSDL2_image.so
+10-19 23:17:23.346 V/pythonutil( 9651): Checking pattern libssl.*\.so against libSDL2.so
+10-19 23:17:23.346 V/pythonutil( 9651): Checking pattern libssl.*\.so against libSDL2_ttf.so
+10-19 23:17:23.346 V/pythonutil( 9651): Checking pattern libssl.*\.so against libSDL2_mixer.so
+10-19 23:17:23.346 V/pythonutil( 9651): Checking pattern libssl.*\.so against libssl1.1.so
+10-19 23:17:23.347 V/pythonutil( 9651): Pattern libssl.*\.so matched file libssl1.1.so
+10-19 23:17:23.347 V/pythonutil( 9651): Checking pattern libssl.*\.so against libpybundle.so
+10-19 23:17:23.347 V/pythonutil( 9651): Checking pattern libssl.*\.so against libmain.so
+10-19 23:17:23.347 V/pythonutil( 9651): Checking pattern libssl.*\.so against libpython3.11.so
+10-19 23:17:23.347 V/pythonutil( 9651): Checking pattern libssl.*\.so against libcrypto1.1.so
+10-19 23:17:23.347 V/pythonutil( 9651): Checking pattern libssl.*\.so against libffi.so
+10-19 23:17:23.347 V/pythonutil( 9651): Checking pattern libssl.*\.so against libsqlite3.so
+10-19 23:17:23.348 V/pythonutil( 9651): Checking pattern libssl.*\.so against libSDL2_image.so
+10-19 23:17:23.348 V/pythonutil( 9651): Checking pattern libcrypto.*\.so against libSDL2.so
+10-19 23:17:23.349 V/pythonutil( 9651): Checking pattern libcrypto.*\.so against libSDL2_ttf.so
+10-19 23:17:23.349 V/pythonutil( 9651): Checking pattern libcrypto.*\.so against libSDL2_mixer.so
+10-19 23:17:23.349 V/pythonutil( 9651): Checking pattern libcrypto.*\.so against libssl1.1.so
+10-19 23:17:23.349 V/pythonutil( 9651): Checking pattern libcrypto.*\.so against libpybundle.so
+10-19 23:17:23.349 V/pythonutil( 9651): Checking pattern libcrypto.*\.so against libmain.so
+10-19 23:17:23.349 V/pythonutil( 9651): Checking pattern libcrypto.*\.so against libpython3.11.so
+10-19 23:17:23.350 V/pythonutil( 9651): Checking pattern libcrypto.*\.so against libcrypto1.1.so
+10-19 23:17:23.350 V/pythonutil( 9651): Pattern libcrypto.*\.so matched file libcrypto1.1.so
+10-19 23:17:23.350 V/pythonutil( 9651): Checking pattern libcrypto.*\.so against libffi.so
+10-19 23:17:23.350 V/pythonutil( 9651): Checking pattern libcrypto.*\.so against libsqlite3.so
+10-19 23:17:23.350 V/pythonutil( 9651): Checking pattern libcrypto.*\.so against libSDL2_image.so
+10-19 23:17:23.351 V/pythonutil( 9651): Checking pattern libSDL2\.so against libSDL2.so
+10-19 23:17:23.351 V/pythonutil( 9651): Pattern libSDL2\.so matched file libSDL2.so
+10-19 23:17:23.351 V/pythonutil( 9651): Checking pattern libSDL2\.so against libSDL2_ttf.so
+10-19 23:17:23.351 V/pythonutil( 9651): Checking pattern libSDL2\.so against libSDL2_mixer.so
+10-19 23:17:23.351 V/pythonutil( 9651): Checking pattern libSDL2\.so against libssl1.1.so
+10-19 23:17:23.352 V/pythonutil( 9651): Checking pattern libSDL2\.so against libpybundle.so
+10-19 23:17:23.352 V/pythonutil( 9651): Checking pattern libSDL2\.so against libmain.so
+10-19 23:17:23.352 V/pythonutil( 9651): Checking pattern libSDL2\.so against libpython3.11.so
+10-19 23:17:23.353 V/pythonutil( 9651): Checking pattern libSDL2\.so against libcrypto1.1.so
+10-19 23:17:23.353 V/pythonutil( 9651): Checking pattern libSDL2\.so against libffi.so
+10-19 23:17:23.353 V/pythonutil( 9651): Checking pattern libSDL2\.so against libsqlite3.so
+10-19 23:17:23.353 V/pythonutil( 9651): Checking pattern libSDL2\.so against libSDL2_image.so
+10-19 23:17:23.354 V/pythonutil( 9651): Checking pattern libSDL2_image\.so against libSDL2.so
+10-19 23:17:23.354 V/pythonutil( 9651): Checking pattern libSDL2_image\.so against libSDL2_ttf.so
+10-19 23:17:23.354 V/pythonutil( 9651): Checking pattern libSDL2_image\.so against libSDL2_mixer.so
+10-19 23:17:23.355 V/pythonutil( 9651): Checking pattern libSDL2_image\.so against libssl1.1.so
+10-19 23:17:23.355 V/pythonutil( 9651): Checking pattern libSDL2_image\.so against libpybundle.so
+10-19 23:17:23.355 V/pythonutil( 9651): Checking pattern libSDL2_image\.so against libmain.so
+10-19 23:17:23.355 V/pythonutil( 9651): Checking pattern libSDL2_image\.so against libpython3.11.so
+10-19 23:17:23.355 V/pythonutil( 9651): Checking pattern libSDL2_image\.so against libcrypto1.1.so
+10-19 23:17:23.355 V/pythonutil( 9651): Checking pattern libSDL2_image\.so against libffi.so
+10-19 23:17:23.356 V/pythonutil( 9651): Checking pattern libSDL2_image\.so against libsqlite3.so
+10-19 23:17:23.356 V/pythonutil( 9651): Checking pattern libSDL2_image\.so against libSDL2_image.so
+10-19 23:17:23.356 V/pythonutil( 9651): Pattern libSDL2_image\.so matched file libSDL2_image.so
+10-19 23:17:23.357 V/pythonutil( 9651): Checking pattern libSDL2_mixer\.so against libSDL2.so
+10-19 23:17:23.357 V/pythonutil( 9651): Checking pattern libSDL2_mixer\.so against libSDL2_ttf.so
+10-19 23:17:23.357 V/pythonutil( 9651): Checking pattern libSDL2_mixer\.so against libSDL2_mixer.so
+10-19 23:17:23.357 V/pythonutil( 9651): Pattern libSDL2_mixer\.so matched file libSDL2_mixer.so
+10-19 23:17:23.357 V/pythonutil( 9651): Checking pattern libSDL2_mixer\.so against libssl1.1.so
+10-19 23:17:23.358 V/pythonutil( 9651): Checking pattern libSDL2_mixer\.so against libpybundle.so
+10-19 23:17:23.358 V/pythonutil( 9651): Checking pattern libSDL2_mixer\.so against libmain.so
+10-19 23:17:23.358 V/pythonutil( 9651): Checking pattern libSDL2_mixer\.so against libpython3.11.so
+10-19 23:17:23.358 V/pythonutil( 9651): Checking pattern libSDL2_mixer\.so against libcrypto1.1.so
+10-19 23:17:23.358 V/pythonutil( 9651): Checking pattern libSDL2_mixer\.so against libffi.so
+10-19 23:17:23.359 V/pythonutil( 9651): Checking pattern libSDL2_mixer\.so against libsqlite3.so
+10-19 23:17:23.359 V/pythonutil( 9651): Checking pattern libSDL2_mixer\.so against libSDL2_image.so
+10-19 23:17:23.359 V/pythonutil( 9651): Checking pattern libSDL2_ttf\.so against libSDL2.so
+10-19 23:17:23.360 V/pythonutil( 9651): Checking pattern libSDL2_ttf\.so against libSDL2_ttf.so
+10-19 23:17:23.360 V/pythonutil( 9651): Pattern libSDL2_ttf\.so matched file libSDL2_ttf.so
+10-19 23:17:23.360 V/pythonutil( 9651): Checking pattern libSDL2_ttf\.so against libSDL2_mixer.so
+10-19 23:17:23.361 V/pythonutil( 9651): Checking pattern libSDL2_ttf\.so against libssl1.1.so
+10-19 23:17:23.361 V/pythonutil( 9651): Checking pattern libSDL2_ttf\.so against libpybundle.so
+10-19 23:17:23.361 V/pythonutil( 9651): Checking pattern libSDL2_ttf\.so against libmain.so
+10-19 23:17:23.361 V/pythonutil( 9651): Checking pattern libSDL2_ttf\.so against libpython3.11.so
+10-19 23:17:23.361 V/pythonutil( 9651): Checking pattern libSDL2_ttf\.so against libcrypto1.1.so
+10-19 23:17:23.361 V/pythonutil( 9651): Checking pattern libSDL2_ttf\.so against libffi.so
+10-19 23:17:23.362 V/pythonutil( 9651): Checking pattern libSDL2_ttf\.so against libsqlite3.so
+10-19 23:17:23.362 V/pythonutil( 9651): Checking pattern libSDL2_ttf\.so against libSDL2_image.so
+10-19 23:17:23.362 V/pythonutil( 9651): Loading library: sqlite3
+10-19 23:17:23.365 D/nativeloader( 9651): Load /data/app/~~TwGZxsncrkTfkAB6kcsPWQ==/org.cyclingtracker.cyclingtracker-Vx-ulEL_R85VsjGYE5lgvA==/lib/arm64/libsqlite3.so using class loader ns clns-9 (caller=/data/app/~~TwGZxsncrkTfkAB6kcsPWQ==/org.cyclingtracker.cyclingtracker-Vx-ulEL_R85VsjGYE5lgvA==/base.apk!classes6.dex): ok
+10-19 23:17:23.365 V/pythonutil( 9651): Loading library: ffi
+10-19 23:17:23.367 D/nativeloader( 9651): Load /data/app/~~TwGZxsncrkTfkAB6kcsPWQ==/org.cyclingtracker.cyclingtracker-Vx-ulEL_R85VsjGYE5lgvA==/lib/arm64/libffi.so using class loader ns clns-9 (caller=/data/app/~~TwGZxsncrkTfkAB6kcsPWQ==/org.cyclingtracker.cyclingtracker-Vx-ulEL_R85VsjGYE5lgvA==/base.apk!classes6.dex): ok
+10-19 23:17:23.367 V/pythonutil( 9651): Loading library: ssl1.1
+10-19 23:17:23.372 D/nativeloader( 9651): Load /data/app/~~TwGZxsncrkTfkAB6kcsPWQ==/org.cyclingtracker.cyclingtracker-Vx-ulEL_R85VsjGYE5lgvA==/lib/arm64/libssl1.1.so using class loader ns clns-9 (caller=/data/app/~~TwGZxsncrkTfkAB6kcsPWQ==/org.cyclingtracker.cyclingtracker-Vx-ulEL_R85VsjGYE5lgvA==/base.apk!classes6.dex): ok
+10-19 23:17:23.372 V/pythonutil( 9651): Loading library: crypto1.1
+10-19 23:17:23.373 D/nativeloader( 9651): Load /data/app/~~TwGZxsncrkTfkAB6kcsPWQ==/org.cyclingtracker.cyclingtracker-Vx-ulEL_R85VsjGYE5lgvA==/lib/arm64/libcrypto1.1.so using class loader ns clns-9 (caller=/data/app/~~TwGZxsncrkTfkAB6kcsPWQ==/org.cyclingtracker.cyclingtracker-Vx-ulEL_R85VsjGYE5lgvA==/base.apk!classes6.dex): ok
+10-19 23:17:23.373 V/pythonutil( 9651): Loading library: SDL2
+10-19 23:17:23.376 D/nativeloader( 9651): Load /data/app/~~TwGZxsncrkTfkAB6kcsPWQ==/org.cyclingtracker.cyclingtracker-Vx-ulEL_R85VsjGYE5lgvA==/lib/arm64/libSDL2.so using class loader ns clns-9 (caller=/data/app/~~TwGZxsncrkTfkAB6kcsPWQ==/org.cyclingtracker.cyclingtracker-Vx-ulEL_R85VsjGYE5lgvA==/base.apk!classes6.dex): ok
+10-19 23:17:23.377 V/pythonutil( 9651): Loading library: SDL2_image
+10-19 23:17:23.379 D/nativeloader( 9651): Load /data/app/~~TwGZxsncrkTfkAB6kcsPWQ==/org.cyclingtracker.cyclingtracker-Vx-ulEL_R85VsjGYE5lgvA==/lib/arm64/libSDL2_image.so using class loader ns clns-9 (caller=/data/app/~~TwGZxsncrkTfkAB6kcsPWQ==/org.cyclingtracker.cyclingtracker-Vx-ulEL_R85VsjGYE5lgvA==/base.apk!classes6.dex): ok
+10-19 23:17:23.379 V/pythonutil( 9651): Loading library: SDL2_mixer
+10-19 23:17:23.381 D/nativeloader( 9651): Load /data/app/~~TwGZxsncrkTfkAB6kcsPWQ==/org.cyclingtracker.cyclingtracker-Vx-ulEL_R85VsjGYE5lgvA==/lib/arm64/libSDL2_mixer.so using class loader ns clns-9 (caller=/data/app/~~TwGZxsncrkTfkAB6kcsPWQ==/org.cyclingtracker.cyclingtracker-Vx-ulEL_R85VsjGYE5lgvA==/base.apk!classes6.dex): ok
+10-19 23:17:23.381 V/pythonutil( 9651): Loading library: SDL2_ttf
+10-19 23:17:23.393 D/nativeloader( 9651): Load /data/app/~~TwGZxsncrkTfkAB6kcsPWQ==/org.cyclingtracker.cyclingtracker-Vx-ulEL_R85VsjGYE5lgvA==/lib/arm64/libSDL2_ttf.so using class loader ns clns-9 (caller=/data/app/~~TwGZxsncrkTfkAB6kcsPWQ==/org.cyclingtracker.cyclingtracker-Vx-ulEL_R85VsjGYE5lgvA==/base.apk!classes6.dex): ok
+10-19 23:17:23.393 V/pythonutil( 9651): Loading library: python3.5m
+10-19 23:17:23.409 D/nativeloader( 9651): Load libpython3.5m.so using class loader ns clns-9 (caller=/data/app/~~TwGZxsncrkTfkAB6kcsPWQ==/org.cyclingtracker.cyclingtracker-Vx-ulEL_R85VsjGYE5lgvA==/base.apk!classes6.dex): dlopen failed: library "libpython3.5m.so" not found
+10-19 23:17:23.410 V/pythonutil( 9651): Library loading error: dlopen failed: library "libpython3.5m.so" not found
+10-19 23:17:23.410 V/pythonutil( 9651): Loading library: python3.6m
+10-19 23:17:23.411 D/nativeloader( 9651): Load libpython3.6m.so using class loader ns clns-9 (caller=/data/app/~~TwGZxsncrkTfkAB6kcsPWQ==/org.cyclingtracker.cyclingtracker-Vx-ulEL_R85VsjGYE5lgvA==/base.apk!classes6.dex): dlopen failed: library "libpython3.6m.so" not found
+10-19 23:17:23.411 V/pythonutil( 9651): Library loading error: dlopen failed: library "libpython3.6m.so" not found
+10-19 23:17:23.411 V/pythonutil( 9651): Loading library: python3.7m
+10-19 23:17:23.413 D/nativeloader( 9651): Load libpython3.7m.so using class loader ns clns-9 (caller=/data/app/~~TwGZxsncrkTfkAB6kcsPWQ==/org.cyclingtracker.cyclingtracker-Vx-ulEL_R85VsjGYE5lgvA==/base.apk!classes6.dex): dlopen failed: library "libpython3.7m.so" not found
+10-19 23:17:23.413 V/pythonutil( 9651): Library loading error: dlopen failed: library "libpython3.7m.so" not found
+10-19 23:17:23.413 V/pythonutil( 9651): Loading library: python3.8
+10-19 23:17:23.415 D/nativeloader( 9651): Load libpython3.8.so using class loader ns clns-9 (caller=/data/app/~~TwGZxsncrkTfkAB6kcsPWQ==/org.cyclingtracker.cyclingtracker-Vx-ulEL_R85VsjGYE5lgvA==/base.apk!classes6.dex): dlopen failed: library "libpython3.8.so" not found
+10-19 23:17:23.415 V/pythonutil( 9651): Library loading error: dlopen failed: library "libpython3.8.so" not found
+10-19 23:17:23.415 V/pythonutil( 9651): Loading library: python3.9
+10-19 23:17:23.417 D/nativeloader( 9651): Load libpython3.9.so using class loader ns clns-9 (caller=/data/app/~~TwGZxsncrkTfkAB6kcsPWQ==/org.cyclingtracker.cyclingtracker-Vx-ulEL_R85VsjGYE5lgvA==/base.apk!classes6.dex): dlopen failed: library "libpython3.9.so" not found
+10-19 23:17:23.417 V/pythonutil( 9651): Library loading error: dlopen failed: library "libpython3.9.so" not found
+10-19 23:17:23.417 V/pythonutil( 9651): Loading library: python3.10
+10-19 23:17:23.419 D/nativeloader( 9651): Load libpython3.10.so using class loader ns clns-9 (caller=/data/app/~~TwGZxsncrkTfkAB6kcsPWQ==/org.cyclingtracker.cyclingtracker-Vx-ulEL_R85VsjGYE5lgvA==/base.apk!classes6.dex): dlopen failed: library "libpython3.10.so" not found
+10-19 23:17:23.419 V/pythonutil( 9651): Library loading error: dlopen failed: library "libpython3.10.so" not found
+10-19 23:17:23.419 V/pythonutil( 9651): Loading library: python3.11
+10-19 23:17:23.430 D/nativeloader( 9651): Load /data/app/~~TwGZxsncrkTfkAB6kcsPWQ==/org.cyclingtracker.cyclingtracker-Vx-ulEL_R85VsjGYE5lgvA==/lib/arm64/libpython3.11.so using class loader ns clns-9 (caller=/data/app/~~TwGZxsncrkTfkAB6kcsPWQ==/org.cyclingtracker.cyclingtracker-Vx-ulEL_R85VsjGYE5lgvA==/base.apk!classes6.dex): ok
+10-19 23:17:23.431 V/pythonutil( 9651): Loading library: main
+10-19 23:17:23.434 D/nativeloader( 9651): Load /data/app/~~TwGZxsncrkTfkAB6kcsPWQ==/org.cyclingtracker.cyclingtracker-Vx-ulEL_R85VsjGYE5lgvA==/lib/arm64/libmain.so using class loader ns clns-9 (caller=/data/app/~~TwGZxsncrkTfkAB6kcsPWQ==/org.cyclingtracker.cyclingtracker-Vx-ulEL_R85VsjGYE5lgvA==/base.apk!classes6.dex): ok
+10-19 23:17:23.435 V/pythonutil( 9651): Loaded everything!
+10-19 23:17:23.436 I/python  ( 9651): Initializing Python for Android
+10-19 23:17:23.436 I/python  ( 9651): Setting additional env vars from p4a_env_vars.txt
+10-19 23:17:23.436 I/python  ( 9651): Changing directory to the one provided by ANDROID_ARGUMENT
+10-19 23:17:23.436 I/python  ( 9651): /data/user/0/org.cyclingtracker.cyclingtracker/files/app
+10-19 23:17:23.436 I/python  ( 9651): Preparing to initialize python
+10-19 23:17:23.437 I/python  ( 9651): _python_bundle dir exists
+10-19 23:17:23.437 I/python  ( 9651): calculated paths to be...
+10-19 23:17:23.437 I/python  ( 9651): /data/user/0/org.cyclingtracker.cyclingtracker/files/app/_python_bundle/stdlib.zip:/data/user/0/org.cyclingtracker.cyclingtracker/files/app/_python_bundle/modules
+10-19 23:17:23.437 I/python  ( 9651): set wchar paths...
+10-19 23:17:23.499 W/Thread-2( 9651): type=1400 audit(0.0:6704): avc:  granted  { execute } for  path="/data/data/org.cyclingtracker.cyclingtracker/files/app/_python_bundle/modules/zlib.cpython-311.so" dev="dm-71" ino=1418794 scontext=u:r:untrusted_app_34:s0:c10,c256,c512,c768 tcontext=u:object_r:app_data_file:s0:c10,c256,c512,c768 tclass=file app=org.cyclingtracker.cyclingtracker
+10-19 23:17:23.535 I/python  ( 9651): Initialized python
+10-19 23:17:23.535 I/python  ( 9651): AND: Init threads
+10-19 23:17:23.537 I/Ride    ( 9651): testing python print redirection
+10-19 23:17:23.543 W/Thread-2( 9651): type=1400 audit(0.0:6705): avc:  granted  { execute } for  path="/data/data/org.cyclingtracker.cyclingtracker/files/app/_python_bundle/modules/math.cpython-311.so" dev="dm-71" ino=1430828 scontext=u:r:untrusted_app_34:s0:c10,c256,c512,c768 tcontext=u:object_r:app_data_file:s0:c10,c256,c512,c768 tclass=file app=org.cyclingtracker.cyclingtracker
+10-19 23:17:23.540 I/Ride    ( 9651): Android path ['.', '/data/user/0/org.cyclingtracker.cyclingtracker/files/app/_python_bundle/stdlib.zip', '/data/user/0/org.cyclingtracker.cyclingtracker/files/app/_python_bundle/modules', '/data/user/0/org.cyclingtracker.cyclingtracker/files/app/_python_bundle/site-packages']
+10-19 23:17:23.541 I/Ride    ( 9651): os.environ is environ({'PATH': '/product/bin:/apex/com.android.runtime/bin:/apex/com.android.art/bin:/apex/com.android.virt/bin:/system_ext/bin:/system/bin:/system/xbin:/odm/bin:/vendor/bin:/vendor/xbin', 'FIRST_STAGE_SNAPUSERD_PID': '440', 'ANDROID_BOOTLOGO': '1', 'ANDROID_ROOT': '/system', 'ANDROID_ASSETS': '/system/app', 'ANDROID_DATA': '/data', 'ANDROID_STORAGE': '/storage', 'ANDROID_ART_ROOT': '/apex/com.android.art', 'ANDROID_I18N_ROOT': '/apex/com.android.i18n', 'ANDROID_TZDATA_ROOT': '/apex/com.android.tzdata', 'EXTERNAL_STORAGE': '/sdcard', 'ASEC_MOUNTPOINT': '/mnt/asec', 'DOWNLOAD_CACHE': '/data/cache', 'BOOTCLASSPATH': '/apex/com.android.art/javalib/core-oj.jar:/apex/com.android.art/javalib/core-libart.jar:/apex/com.android.art/javalib/okhttp.jar:/apex/com.android.art/javalib/bouncycastle.jar:/apex/com.android.art/javalib/apache-xml.jar:/system/framework/framework.jar:/system/framework/framework-graphics.jar:/system/framework/framework-location.jar:/system/framework/ext.jar:/system/framework/telephony-common.jar:/system/framework/voip-common.jar:/system/framework/ims-common.jar:/system/framework/framework-ondeviceintelligence-platform.jar:/apex/com.android.i18n/javalib/core-icu4j.jar:/apex/com.android.adservices/javalib/framework-adservices.jar:/apex/com.android.adservices/javalib/framework-sdksandbox.jar:/apex/com.android.appsearch/javalib/framework-appsearch.jar:/apex/com.android.bt/javalib/framework-bluetooth.jar:/apex/com.android.configinfrastructure/javalib/framework-configinfrastructure.jar:/apex/com.android.conscrypt/javalib/conscrypt.jar:/apex/com.android.conscrypt/javalib/framework-conscrypt-nsc.jar:/apex/com.android.crashrecovery/javalib/framework-crashrecovery.jar:/apex/com.android.devicelock/javalib/framework-devicelock.jar:/apex/com.android.healthfitness/javalib/framework-healthfitness.jar:/apex/com.android.ipsec/javalib/android.net.ipsec.ike.jar:/apex/com.android.media/javalib/updatable-media.jar:/apex/com.android.mediaprovider/javalib/framework-mediaprovider.jar:/apex/com.android.mediaprovider/javalib/framework-pdf.jar:/apex/com.android.mediaprovider/javalib/framework-pdf-v.jar:/apex/com.android.mediaprovider/javalib/framework-photopicker.jar:/apex/com.android.nfcservices/javalib/framework-nfc.jar:/apex/com.android.npumanager/javalib/framework-npumanager.jar:/apex/com.android.ondevicepersonalization/javalib/framework-ondevicepersonalization.jar:/apex/com.android.os.statsd/javalib/framework-statsd.jar:/apex/com.android.permission/javalib/framework-permission.jar:/apex/com.android.permission/javalib/framework-permission-s.jar:/apex/com.android.profiling/javalib/framework-anomaly-detector.jar:/apex/com.android.profiling/javalib/framework-profiling.jar:/apex/com.android.scheduling/javalib/framework-scheduling.jar:/apex/com.android.sdkext/javalib/framework-sdkextensions.jar:/apex/com.android.telephonycore/javalib/framework-telecom.jar:/apex/com.android.telephonycore/javalib/framework-telephony.jar:/apex/com.android.tethering/javalib/framework-connectivity.jar:/apex/com.android.tethering/javalib/framework-connectivity-b.jar:/apex/com.android.tethering/javalib/framework-connectivity-t.jar:/apex/com.android.tethering/javalib/framework-tethering.jar:/apex/com.android.uprobestats/javalib/framework-uprobestats.jar:/apex/com.android.uwb/javalib/framework-ranging.jar:/apex/com.android.uwb/javalib/framework-uwb.jar:/apex/com.android.virt/javalib/framework-virtualization.jar:/apex/com.android.webapp/javalib/framework-webapp.jar:/apex/com.android.wifi/javalib/framework-wifi.jar', 'DEX2OATBOOTCLASSPATH': '/apex/com.android.art/javalib/core-oj.jar:/apex/com.android.art/javalib/core-libart.jar:/apex/com.android.art/javalib/okhttp.jar:/apex/com.android.art/javalib/bouncycastle.jar:/apex/com.android.art/javalib/apache-xml.jar:/system/framework/framework.jar:/system/framework/framework-graphics.jar:/system/framework/framework-location.jar:/system/framework/ext.jar:/system/framework/telephony-common.jar:/system/framework/voip-common.jar:/system/framework/ims-common.jar:/system/framew
+10-19 23:17:23.541 I/Ride    ( 9651): Android kivy bootstrap done. __name__ is __main__
+10-19 23:17:23.541 I/python  ( 9651): AND: Ran string
+10-19 23:17:23.541 I/python  ( 9651): Run user program, change dir and execute entrypoint
+10-19 23:17:23.603 W/Thread-2( 9651): type=1400 audit(0.0:6706): avc:  granted  { execute } for  path="/data/data/org.cyclingtracker.cyclingtracker/files/app/_python_bundle/modules/_heapq.cpython-311.so" dev="dm-71" ino=1399329 scontext=u:r:untrusted_app_34:s0:c10,c256,c512,c768 tcontext=u:object_r:app_data_file:s0:c10,c256,c512,c768 tclass=file app=org.cyclingtracker.cyclingtracker
+10-19 23:17:23.607 W/Thread-2( 9651): type=1400 audit(0.0:6707): avc:  granted  { execute } for  path="/data/data/org.cyclingtracker.cyclingtracker/files/app/_python_bundle/modules/_queue.cpython-311.so" dev="dm-71" ino=1245517 scontext=u:r:untrusted_app_34:s0:c10,c256,c512,c768 tcontext=u:object_r:app_data_file:s0:c10,c256,c512,c768 tclass=file app=org.cyclingtracker.cyclingtracker
+10-19 23:17:23.627 W/Thread-2( 9651): type=1400 audit(0.0:6708): avc:  granted  { execute } for  path="/data/data/org.cyclingtracker.cyclingtracker/files/app/_python_bundle/modules/_datetime.cpython-311.so" dev="dm-71" ino=1399370 scontext=u:r:untrusted_app_34:s0:c10,c256,c512,c768 tcontext=u:object_r:app_data_file:s0:c10,c256,c512,c768 tclass=file app=org.cyclingtracker.cyclingtracker
+10-19 23:17:24.028 I/Ride    ( 9651): [INFO   ] [Logger      ] Record log in /data/user/0/org.cyclingtracker.cyclingtracker/files/app/.kivy/logs/kivy_26-10-19_1.txt
+10-19 23:17:24.029 I/Ride    ( 9651): [INFO   ] [Kivy        ] v2.3.0
+10-19 23:17:24.030 I/Ride    ( 9651): [INFO   ] [Kivy        ] Installed at "/data/user/0/org.cyclingtracker.cyclingtracker/files/app/_python_bundle/site-packages/kivy/__init__.pyc"
+10-19 23:17:24.030 I/Ride    ( 9651): [INFO   ] [Python      ] v3.11.5 (main, Oct 19 2026, 18:11:00) [Clang 14.0.6 (https://android.googlesource.com/toolchain/llvm-project 4c603efb0
+10-19 23:17:24.031 I/Ride    ( 9651): [INFO   ] [Python      ] Interpreter at ""
+10-19 23:17:24.032 I/Ride    ( 9651): [INFO   ] [Logger      ] Purge log fired. Processing...
+10-19 23:17:24.033 I/Ride    ( 9651): [INFO   ] [Logger      ] Purge finished!
+10-19 23:17:24.941 D/ActivityManager( 1723): freezing 2502 com.google.android.permissioncontroller
+10-19 23:17:24.954 I/WifiHAL ( 1122): Creating message to get link statistics; iface = 48
+10-19 23:17:24.961 D/InetDiagMessage( 1723): Destroyed 0 sockets, proto=IPPROTO_TCP, family=AF_INET, states=14
+10-19 23:17:24.968 D/InetDiagMessage( 1723): Destroyed 0 sockets, proto=IPPROTO_TCP, family=AF_INET6, states=14
+10-19 23:17:24.968 D/InetDiagMessage( 1723): Destroyed live tcp sockets for uids={10228} in 20ms
+10-19 23:17:25.118 I/pixel-thermal( 1908): VIRTUAL-SKIN:26.704 raw data: VIRTUAL-GNSS-BATT:23717 VIRTUAL-NEUTRAL-QI:22206.6 VIRTUAL-QI-DISP:26704 VIRTUAL-SKIN:26704 VIRTUAL-USB2-BATT:23657.8 battery:22600 disp_therm:24293 gnss_tcxo_therm:21834 neutral_therm:23989 qi_therm:27033 usb_pwr_therm2:23755 
+10-19 23:17:25.120 D/ImpulseStateSource( 2641): Notify clients: 1590
+10-19 23:17:25.310 D/libnfc_nci( 2723): ART-GC black_dense_end:0x2083000 mid_gen_end:0x2084000 post_compact_end:0x2089000 black_allocations_begin:0x21c0000 young:1 performed_compaction:1
+10-19 23:17:26.087 D/SurfaceFlinger(  700): setDesiredMode 4619827677550801152 {mode={fps=60.00 Hz, modePtr={id=2, vsyncRate=120.00 Hz, peakRefreshRate=120.00 Hz}}, emitEvent=false, force=false}
+10-19 23:17:26.090 I/DisplayDeviceRepository( 1723): Display device changed render timings: "Integrierter Bildschirm", renderFrameRate=60.000004, presentationDeadlineNanos=11500000, appVsyncOffsetNanos=6233332, frameRateOverrides=[]
+10-19 23:17:26.091 D/WindowManager( 1723): DeferredDisplayUpdater: partially applying DisplayInfo(1080 x 2340) immediately
+10-19 23:17:26.095 D/audio_hw( 1060): adev_set_parameters: enter: screen_state=on
+10-19 23:17:27.588 D/AOC     ( 1352): A3:MSG: lsm6dsr_device.cc, 763: USF: Lsm6dsrDevice: Sensor 4: Enabled 0, odr_index 0.
+10-19 23:17:27.589 D/AOC     ( 1352): A3:MSG: lsm6dsr_fifo.cc, 750: USF: Lsm6dsrFifo: ODR: XL/G/T/TS: 104/208/13/26 WM: 6 Intr: 59.
+10-19 23:17:27.589 D/AOC     ( 1352): A3:MSG: lsm6dsr_device.cc, 671: USF: Lsm6dsrDevice: Fifo was disabled for 291504ns.
+10-19 23:17:27.589 D/AOC     ( 1352): A3:MSG: usf_sensor.cc, 1581: USF: Received stop sampling request for LSM6DSR Stationary Detect (active:-1).
+10-19 23:17:27.590 D/AOC     ( 1352): A3:MSG: usf_sensor.cc, 2037: USF: Sampling configuration 2560 not found.
+10-19 23:17:27.590 D/AOC     ( 1352): A3:MSG: usf_sensor_client.cc, 161: USF: Received kErrNotFound when disabling one shot sensor.
+10-19 23:17:27.590 D/AOC     ( 1352): A3:MSG: usf_sensor.cc, 1573: USF: Received start sampling request for LSM6DSR Motion Detect (active:1).
+10-19 23:17:27.590 D/AOC     ( 1352): A3:MSG: lsm6dsr_device.cc, 763: USF: Lsm6dsrDevice: Sensor 3: Enabled 1, odr_index 1.
+10-19 23:17:27.590 D/AOC     ( 1352): A3:MSG: lsm6dsr_fifo.cc, 750: USF: Lsm6dsrFifo: ODR: XL/G/T/TS: 104/208/13/26 WM: 6 Intr: 59.
+10-19 23:17:27.591 D/AOC     ( 1352): A3:MSG: lsm6dsr_device.cc, 671: USF: Lsm6dsrDevice: Fifo was disabled for 295166ns.
+10-19 23:17:27.591 D/AOC     ( 1352): A3:MSG: motion_state_sensor.cc, 327: USF: MoSt: MotionDetect sampling started with sampling ID 2564.
+10-19 23:17:27.593 D/AOC     ( 1352): A3:MSG: usf_sensor.cc, 1573: USF: Received start sampling request for LSM6DSR Motion Detect (active:2).
+10-19 23:17:27.595 D/AOC     ( 1352): A3:MSG: usf_sensor.cc, 1581: USF: Received stop sampling request for LSM6DSR FreeFall Detect (active:0).
+10-19 23:17:27.595 D/AOC     ( 1352): A3:MSG: lsm6dsr_device.cc, 763: USF: Lsm6dsrDevice: Sensor 5: Enabled 0, odr_index 0.
+10-19 23:17:27.595 D/AOC     ( 1352): A3:MSG: lsm6dsr_fifo.cc, 750: USF: Lsm6dsrFifo: ODR: XL/G/T/TS: 104/208/13/26 WM: 6 Intr: 59.
+10-19 23:17:27.595 D/AOC     ( 1352): A3:MSG: lsm6dsr_device.cc, 671: USF: Lsm6dsrDevice: Fifo was disabled for 296630ns.
+10-19 23:17:27.596 D/AOC     ( 1352): A3:MSG: usf_sensor.cc, 1581: USF: Received stop sampling request for LSM6DSR Stationary Detect (active:-1).
+10-19 23:17:27.597 D/AOC     ( 1352): A3:MSG: usf_sensor.cc, 2037: USF: Sampling configuration 2563 not found.
+10-19 23:17:27.597 D/AOC     ( 1352): A3:MSG: usf_sensor_client.cc, 145: USF: Received kErrNotFound when disabling one shot sensor.
+10-19 23:17:27.607 W/Thread-2( 9651): type=1400 audit(0.0:6722): avc:  granted  { execute } for  path="/data/data/org.cyclingtracker.cyclingtracker/files/app/_python_bundle/modules/_socket.cpython-311.so" dev="dm-71" ino=68028 scontext=u:r:untrusted_app_34:s0:c10,c256,c512,c768 tcontext=u:object_r:app_data_file:s0:c10,c256,c512,c768 tclass=file app=org.cyclingtracker.cyclingtracker
+10-19 23:17:27.617 D/AOC     ( 1352): A3:MSG: usf_sensor.cc, 1573: USF: Received start sampling request for LSM6DSR Gyroscope (active:3).
+10-19 23:17:27.617 D/AOC     ( 1352): A3:MSG: lsm6dsr_device.cc, 763: USF: Lsm6dsrDevice: Sensor 1: Enabled 1, odr_index 3.
+10-19 23:17:27.617 D/AOC     ( 1352): A3:MSG: lsm6dsr_fifo.cc, 750: USF: Lsm6dsrFifo: ODR: XL/G/T/TS: 104/52/13/13 WM: 3 Intr: 61.
+10-19 23:17:27.618 D/AOC     ( 1352): A3:MSG: lsm6dsr_device.cc, 671: USF: Lsm6dsrDevice: Fifo was disabled for 416504ns.
+10-19 23:17:27.619 D/AOC     ( 1352): A3:MSG: usf_sensor.cc, 1573: USF: Received start sampling request for Fusion Mag (active:2).
+10-19 23:17:27.620 D/AOC     ( 1352): A3:MSG: fusion_mag_sensor.cc, 672: USF: FMAG: Reconfig sampling: period(new/old) = 100/10ms, latency = 500ms.
+10-19 23:17:27.621 D/AOC     ( 1352): A3:MSG: usf_sensor.cc, 1573: USF: Received start sampling request for MMC56X3X Magnetometer 0 (active:2).
+10-19 23:17:27.621 D/AOC     ( 1352): A3:MSG: mmc56x3x_device.cc, 409: USF: MMC56X3X1: mmc56x3x_enable_measure odr = 10.
+10-19 23:17:27.624 D/AOC     ( 1352): A3:MSG: usf_sensor.cc, 1573: USF: Received start sampling request for MMC56X3X Magnetometer 1 (active:2).
+10-19 23:17:27.624 D/AOC     ( 1352): A3:MSG: mmc56x3x_device.cc, 409: USF: MMC56X3X2: mmc56x3x_enable_measure odr = 10.
+10-19 23:17:27.627 W/Thread-2( 9651): type=1400 audit(0.0:6723): avc:  granted  { execute } for  path="/data/data/org.cyclingtracker.cyclingtracker/files/app/_python_bundle/modules/array.cpython-311.so" dev="dm-71" ino=1430767 scontext=u:r:untrusted_app_34:s0:c10,c256,c512,c768 tcontext=u:object_r:app_data_file:s0:c10,c256,c512,c768 tclass=file app=org.cyclingtracker.cyclingtracker
+10-19 23:17:27.635 W/Thread-2( 9651): type=1400 audit(0.0:6724): avc:  granted  { execute } for  path="/data/data/org.cyclingtracker.cyclingtracker/files/app/_python_bundle/modules/_ssl.cpython-311.so" dev="dm-71" ino=68151 scontext=u:r:untrusted_app_34:s0:c10,c256,c512,c768 tcontext=u:object_r:app_data_file:s0:c10,c256,c512,c768 tclass=file app=org.cyclingtracker.cyclingtracker
+10-19 23:17:27.667 W/Thread-2( 9651): type=1400 audit(0.0:6725): avc:  granted  { execute } for  path="/data/data/org.cyclingtracker.cyclingtracker/files/app/_python_bundle/modules/binascii.cpython-311.so" dev="dm-71" ino=1430722 scontext=u:r:untrusted_app_34:s0:c10,c256,c512,c768 tcontext=u:object_r:app_data_file:s0:c10,c256,c512,c768 tclass=file app=org.cyclingtracker.cyclingtracker
+10-19 23:17:27.683 W/Thread-2( 9651): type=1400 audit(0.0:6726): avc:  granted  { execute } for  path="/data/data/org.cyclingtracker.cyclingtracker/files/app/_python_bundle/modules/_contextvars.cpython-311.so" dev="dm-71" ino=1403396 scontext=u:r:untrusted_app_34:s0:c10,c256,c512,c768 tcontext=u:object_r:app_data_file:s0:c10,c256,c512,c768 tclass=file app=org.cyclingtracker.cyclingtracker
+10-19 23:17:27.784 I/NearbyMediums( 3006): No BLE Fast/GATT advertisements found in the latest cycle.
+10-19 23:17:27.784 I/NearbyMediums( 3006): Current Tracked Scanning Clients are : {NearbyConnections.EnvironmentMonitor, NearbySharing}
+10-19 23:17:27.838 I/Ride    ( 9651): [INFO   ] [RideService ] entrypoint reached
+10-19 23:17:27.841 I/Ride    ( 9651): [INFO   ] [RideService ] Android service reference obtained
+10-19 23:17:28.000 D/AOC     ( 1352): A3:MSG: usf_sensor.cc, 1573: USF: Received start sampling request for LSM6DSR Accelerometer (active:6).
+10-19 23:17:28.006 I/CHRE    ( 1070): @ 45117.959: [AR] ON => IDLE
+10-19 23:17:28.051 I/WifiHAL ( 1122): Creating message to get link statistics; iface = 48
+10-19 23:17:28.155 E/libbinder.IPCThreadState( 1122): binder thread pool (1 threads) starved for 103 ms
+10-19 23:17:28.552 I/ActivityManager( 1723): Background started FGS: Allowed [callingPackage: org.cyclingtracker.cyclingtracker; callingUid: 10010; uidState: TOP ; uidBFSL: [BFSL]; BFGS denied: false; intent: Intent { xflg=0x4 cmp=org.cyclingtracker.cyclingtracker/.ServiceRide (has extras) }; code:PROC_STATE_TOP; tempAllowListReason:<,reasonCode:SYSTEM_ALLOW_LISTED,duration:9223372036854775807,callingUid:-1>; allowWiu:12; targetSdkVersion:34; callerTargetSdkVersion:34; startForegroundCount:0; bindFromPackage:null; isBindService:false]
+10-19 23:17:28.559 I/Ride    ( 9651): [INFO   ] [RideService ] foreground notification started
+10-19 23:17:28.560 I/Ride    ( 9651): [INFO   ] [RideService ] foreground promotion completed
+10-19 23:17:28.573 I/Ride    ( 9651): [INFO   ] [Database    ] opening /data/user/0/org.cyclingtracker.cyclingtracker/files/cyclingtracker.db
+10-19 23:17:28.574 I/Ride    ( 9651): [INFO   ] [Database    ] schema version 4
+10-19 23:17:28.574 I/Ride    ( 9651): [INFO   ] [RideService ] database opened
+10-19 23:17:28.594 I/Ride    ( 9651): [INFO   ] [RideService ] partial wake lock acquired
+10-19 23:17:28.625 D/GnssAidl( 1102): Gnss::setPositionMode
+10-19 23:17:28.625 D/GnssVisibilityControlAidl( 1102): GnssVisibilityControl::isInEmergencySession
+10-19 23:17:28.626 I/Ride    ( 9651): [INFO   ] [RideService ] location tracking started for 1 using ['gps', 'network']
+10-19 23:17:28.626 I/libgps  ( 1102): [proxy__gnss_visibility_control_is_in_emergency_session_cb] = 0
+10-19 23:17:28.627 D/gpsd    ( 1323): WakeLock(Acquire,GPSD)
+10-19 23:17:28.628 D/GnssAidl( 1102): Gnss::start
+10-19 23:17:28.637 D/GnssAidl( 1102): Gnss::injectLocation
+10-19 23:17:28.639 D/GnssAidl( 1102): Gnss::injectTime
+10-19 23:17:28.651 I/Ride    ( 9651): [INFO   ] [RideService ] received GPS fix accuracy=100.0m
+10-19 23:17:28.675 D/DrawExpandable( 2500): expandable check detail:
+10-19 23:17:28.675 D/DrawExpandable( 2500):  - isAnimating=false
+10-19 23:17:28.675 D/DrawExpandable( 2500):  - showDialog=false
+10-19 23:17:28.675 D/DrawExpandable( 2500):  - overlayView=null (isAttached=null)
+10-19 23:17:28.675 D/DrawExpandable( 2500):  - localView=androidx.compose.ui.platform.AndroidComposeView{e293fb7 VFED..... ......I. 0,0-0,0 aid=312} (isAttached=true)
+10-19 23:17:28.675 D/DrawExpandable( 2500):  - composeViewRoot=androidx.compose.ui.platform.AndroidComposeView{e293fb7 VFED..... ......I. 0,0-0,0 aid=312} (isAttached=true)
+10-19 23:17:28.675 D/DrawExpandable( 2500):  - dynamicTargetResolutionEnabled=true
+10-19 23:17:28.675 D/DrawExpandable( 2500):  - controller.overlay=null
+10-19 23:17:28.684 D/DrawExpandable( 2500): expandable check detail:
+10-19 23:17:28.684 D/DrawExpandable( 2500):  - isAnimating=false
+10-19 23:17:28.684 D/DrawExpandable( 2500):  - showDialog=false
+10-19 23:17:28.684 D/DrawExpandable( 2500):  - overlayView=null (isAttached=null)
+10-19 23:17:28.684 D/DrawExpandable( 2500):  - localView=androidx.compose.ui.platform.AndroidComposeView{e90dc38 VFED..... ......I. 0,0-0,0 aid=314} (isAttached=true)
+10-19 23:17:28.684 D/DrawExpandable( 2500):  - composeViewRoot=androidx.compose.ui.platform.AndroidComposeView{e90dc38 VFED..... ......I. 0,0-0,0 aid=314} (isAttached=true)
+10-19 23:17:28.684 D/DrawExpandable( 2500):  - dynamicTargetResolutionEnabled=true
+10-19 23:17:28.684 D/DrawExpandable( 2500):  - controller.overlay=null
+10-19 23:17:28.813 I/ndroid.systemui( 2500): NativeAlloc concurrent mark compact GC freed 6395KB AllocSpace bytes, 0(0B) LOS objects, 85% free, 37MB/256MB, paused 280us,718us total 133.580ms
+10-19 23:17:28.820 W/System  ( 2500): A resource failed to call release. 
+10-19 23:17:28.820 W/System  ( 2500): A resource failed to call release. 
+10-19 23:17:28.820 W/System  ( 2500): A resource failed to call release. 
+10-19 23:17:28.820 W/System  ( 2500): A resource failed to call release. 
+10-19 23:17:28.820 W/System  ( 2500): A resource failed to call release. 
+10-19 23:17:28.820 W/System  ( 2500): A resource failed to call release. 
+10-19 23:17:28.820 W/System  ( 2500): A resource failed to call release. 
+10-19 23:17:28.820 W/System  ( 2500): A resource failed to call release. 
+10-19 23:17:28.820 W/System  ( 2500): A resource failed to call release. 
+10-19 23:17:28.821 W/System  ( 2500): A resource failed to call release. 
+10-19 23:17:28.821 W/System  ( 2500): A resource failed to call release. 
+10-19 23:17:28.821 W/System  ( 2500): A resource failed to call release. 
+10-19 23:17:28.821 W/System  ( 2500): A resource failed to call release. 
+10-19 23:17:28.821 W/System  ( 2500): A resource failed to call release. 
+10-19 23:17:28.821 W/System  ( 2500): A resource failed to call release. 
+10-19 23:17:28.821 W/System  ( 2500): A resource failed to call release. 
+10-19 23:17:28.821 W/System  ( 2500): A resource failed to call release. 
+10-19 23:17:28.822 W/System  ( 2500): A resource failed to call release. 
+10-19 23:17:28.822 W/System  ( 2500): A resource failed to call release. 
+10-19 23:17:28.822 W/System  ( 2500): A resource failed to call release. 
+10-19 23:17:28.822 W/System  ( 2500): A resource failed to call release. 
+10-19 23:17:28.822 W/System  ( 2500): A resource failed to call release. 
+10-19 23:17:28.825 W/System  ( 2500): A resource failed to call release. 
+10-19 23:17:28.825 W/System  ( 2500): A resource failed to call release. 
+10-19 23:17:28.825 W/System  ( 2500): A resource failed to call release. 
+10-19 23:17:28.825 W/System  ( 2500): A resource failed to call release. 
+10-19 23:17:28.826 W/System  ( 2500): A resource failed to call release. 
+10-19 23:17:28.826 W/System  ( 2500): A resource failed to call release. 
+10-19 23:17:28.826 W/System  ( 2500): A resource failed to call release. 
+10-19 23:17:28.826 W/System  ( 2500): A resource failed to call release. 
+10-19 23:17:28.827 W/System  ( 2500): A resource failed to call release. 
+10-19 23:17:28.827 W/System  ( 2500): A resource failed to call release. 
+10-19 23:17:28.827 W/System  ( 2500): A resource failed to call release. 
+10-19 23:17:28.827 W/System  ( 2500): A resource failed to call release. 
+10-19 23:17:28.827 W/System  ( 2500): A resource failed to call release. 
+10-19 23:17:28.827 W/System  ( 2500): A resource failed to call release. 
+10-19 23:17:28.827 W/System  ( 2500): A resource failed to call release. 
+10-19 23:17:28.827 W/System  ( 2500): A resource failed to call release. 
+10-19 23:17:28.828 W/System  ( 2500): A resource failed to call release. 
+10-19 23:17:28.828 W/System  ( 2500): A resource failed to call release. 
+10-19 23:17:28.828 W/System  ( 2500): A resource failed to call release. 
+10-19 23:17:28.875 D/SurfaceFlinger(  700): setDesiredMode 4619827677550801152 {mode={fps=120.00 Hz, modePtr={id=2, vsyncRate=120.00 Hz, peakRefreshRate=120.00 Hz}}, emitEvent=false, force=false}
+10-19 23:17:28.877 I/DisplayDeviceRepository( 1723): Display device changed render timings: "Integrierter Bildschirm", renderFrameRate=120.00001, presentationDeadlineNanos=11500000, appVsyncOffsetNanos=6233332, frameRateOverrides=[]
+10-19 23:17:28.878 D/WindowManager( 1723): DeferredDisplayUpdater: partially applying DisplayInfo(1080 x 2340) immediately
+10-19 23:17:28.881 D/audio_hw( 1060): adev_set_parameters: enter: screen_state=on
+10-19 23:17:29.132 D/gpsd    ( 1323): CALL_SENTRY(main()): GlEngine::OnStart took 502 ms (from 45132526 to 45133028) (logOverhead=0,0,0,0,0,0,0), start: 23:17:28.630
+10-19 23:17:29.136 D/gpsd    ( 1323): CALL_SENTRY(main()): marshal_gps_start took 507 ms (from 45132525 to 45133032) (logOverhead=0,0,0,0,0,0,0), start: 23:17:28.629
+10-19 23:17:29.136 D/AGnssRilCbJni( 1723): requestSetIdCb. setIdflag: 1, 
+10-19 23:17:29.136 D/gpsd    ( 1323): CALL_SENTRY(main()): ProcessEvent took 507 ms (from 45132525 to 45133032) (logOverhead=0,0,0,0,0,0,0), start: 23:17:28.629
+10-19 23:17:29.136 I/LibSITRil-Gps( 1323): RequestAGPS: msgId=231 data=0x7fd27f81a0 data_len=1 callback=0x6133d0354c
+10-19 23:17:29.136 D/RILClient( 1323): [OemClient] RILC_Send msgId:231 lengh:1 channel:0
+10-19 23:17:29.136 D/RILClient( 1323): [OemClient]REQ (clientId = 1, t = 35, msgId = 231, len = 1 channel = 0)
+10-19 23:17:29.186 D/RILClient( 1323): [OemClient]RSP: (clientId = 1, t = 35, msgId = 231, len = 0, channel = 0, status = 0)
+10-19 23:17:29.677 D/gpsd    ( 1323): $PGLOR,0,RID,4776,154,20,24,657860*39
+10-19 23:17:29.692 D/usf_sensor_hal( 1088): accelerometer: Enter Batch. Period = 20000000, latency = 0.
+10-19 23:17:29.692 D/usf_sensor_hal( 1088): IMU temperature: Enter Batch. Period = 615385000, latency = 0.
+10-19 23:17:29.693 D/AOC     ( 1352): A3:MSG: usf_sensor.cc, 2085: USF: Received reconfig sampling request for LSM6DSR Temperature.
+10-19 23:17:29.694 D/usf_sensor_hal( 1088): accelerometer: Enter Activate. Enable = 1.
+10-19 23:17:29.695 D/AOC     ( 1352): A3:MSG: usf_sensor.cc, 1573: USF: Received start sampling request for LSM6DSR Accelerometer (active:6).
+10-19 23:17:29.699 D/usf_sensor_hal( 1088): gyroscope: Enter Batch. Period = 20000000, latency = 0.
+10-19 23:17:29.699 D/usf_sensor_hal( 1088): IMU temperature: Enter Batch. Period = 615385000, latency = 0.
+10-19 23:17:29.700 D/usf_sensor_hal( 1088): gyroscope: Enter Activate. Enable = 1.
+10-19 23:17:29.701 D/AOC     ( 1352): A3:MSG: usf_sensor.cc, 1573: USF: Received start sampling request for LSM6DSR Gyroscope (active:2).
+10-19 23:17:29.702 D/AOC     ( 1352): A3:MSG: lsm6dsr_device.cc, 763: USF: Lsm6dsrDevice: Sensor 1: Enabled 1, odr_index 3.
+10-19 23:17:29.702 D/AOC     ( 1352): A3:MSG: lsm6dsr_fifo.cc, 750: USF: Lsm6dsrFifo: ODR: XL/G/T/TS: 104/52/13/13 WM: 3 Intr: 61.
+10-19 23:17:29.702 D/AOC     ( 1352): A3:MSG: lsm6dsr_device.cc, 671: USF: Lsm6dsrDevice: Fifo was disabled for 273438ns.
+10-19 23:17:29.705 D/usf_sensor_hal( 1088): pressure: Enter Batch. Period = 100000000, latency = 0.
+10-19 23:17:29.705 D/usf_sensor_hal( 1088): pressure: Enter Activate. Enable = 1.
+10-19 23:17:29.707 D/AOC     ( 1352): A3:MSG: usf_sensor.cc, 1573: USF: Received start sampling request for ICP10101 Pressure Sensor (active:2).
+10-19 23:17:29.707 D/AOC     ( 1352): A3:MSG: icp10101_device.cc, 161: USF: ICP10101: Barometer stops sampling.
+10-19 23:17:29.707 D/AOC     ( 1352): A3:MSG: icp10101_device.cc, 147: USF: ICP10101: Barometer starts sampling: period_ns = 40000000, max_latency_ns = 10000
+10-19 23:17:30.123 D/ImpulseConnection( 2641): timeout happen: com.google.android.apps.turbo
+10-19 23:17:30.124 D/ImpulseConnection( 2641): unbindService for releasing a CONNECTED connection com.google.android.apps.turbo
+10-19 23:17:30.134 I/HidDeviceService(23141): unregisterAppUid(): uid=10106
+10-19 23:17:30.134 W/HidDeviceService(23141): unregisterAppUid(): caller UID doesn't match user UID
+10-19 23:17:30.480 I/NearbyPresence( 3006): (REDACTED) [NP_EVENT] %s
+10-19 23:17:31.123 D/SurfaceFlinger(  700): setDesiredMode 4619827677550801152 {mode={fps=60.00 Hz, modePtr={id=2, vsyncRate=120.00 Hz, peakRefreshRate=120.00 Hz}}, emitEvent=false, force=false}
+10-19 23:17:31.125 I/DisplayDeviceRepository( 1723): Display device changed render timings: "Integrierter Bildschirm", renderFrameRate=60.000004, presentationDeadlineNanos=11500000, appVsyncOffsetNanos=6233332, frameRateOverrides=[]
+10-19 23:17:31.126 D/WindowManager( 1723): DeferredDisplayUpdater: partially applying DisplayInfo(1080 x 2340) immediately
+10-19 23:17:31.127 D/audio_hw( 1060): adev_set_parameters: enter: screen_state=on
+10-19 23:17:31.187 I/WifiHAL ( 1122): Creating message to get link statistics; iface = 48
+10-19 23:17:31.716 I/Ride    ( 9651): [INFO   ] [RideService ] received GPS fix accuracy=4.4m
+10-19 23:17:31.721 I/FrewleTileCacheManagerV( 3899): (REDACTED) Fetched %d AP models from cache
+10-19 23:17:31.723 I/FusedLocation( 3006): (REDACTED) location delivery to %s blocked - too close
+10-19 23:17:31.723 I/FusedLocation( 3006): (REDACTED) location delivery to %s blocked - too close
+10-19 23:17:31.726 D/BoundBrokerSvc( 3899): onBind: Intent { act=com.google.android.mobstore.service.START dat=chimera-action:/... xflg=0x4 cmp=com.google.android.gms/.chimera.GmsApiService }
+10-19 23:17:31.726 D/BoundBrokerSvc( 3899): Loading bound service for intent: Intent { act=com.google.android.mobstore.service.START dat=chimera-action:/... xflg=0x4 cmp=com.google.android.gms/.chimera.GmsApiService }
+10-19 23:17:31.726 I/FusedLocation( 3006): (REDACTED) location delivery to %s blocked - too close
+10-19 23:17:31.726 I/FusedLocation( 3006): (REDACTED) location delivery to %s blocked - too close
+10-19 23:17:31.732 D/BoundBrokerSvc( 3899): onBind: Intent { act=com.google.android.mdd.service.START dat=chimera-action:/... xflg=0x4 cmp=com.google.android.gms/.chimera.GmsApiService }
+10-19 23:17:31.732 D/BoundBrokerSvc( 3899): Loading bound service for intent: Intent { act=com.google.android.mdd.service.START dat=chimera-action:/... xflg=0x4 cmp=com.google.android.gms/.chimera.GmsApiService }
+10-19 23:17:31.738 D/BoundBrokerSvc( 3006): onBind: Intent { act=com.google.android.mobstore.service.START dat=chimera-action:/... xflg=0x4 cmp=com.google.android.gms/.chimera.GmsApiService }
+10-19 23:17:31.738 D/BoundBrokerSvc( 3006): Loading bound service for intent: Intent { act=com.google.android.mobstore.service.START dat=chimera-action:/... xflg=0x4 cmp=com.google.android.gms/.chimera.GmsApiService }
+10-19 23:17:31.741 D/BoundBrokerSvc( 3006): onBind: Intent { act=com.google.android.mdd.service.START dat=chimera-action:/... xflg=0x4 cmp=com.google.android.gms/.chimera.GmsApiService }
+10-19 23:17:31.741 D/BoundBrokerSvc( 3006): Loading bound service for intent: Intent { act=com.google.android.mdd.service.START dat=chimera-action:/... xflg=0x4 cmp=com.google.android.gms/.chimera.GmsApiService }
+10-19 23:17:32.637 D/AOC     ( 1352): A3:MSG: vsc_controller.cc, 532: VSC: [Significant Motion] requestSensorEvents: sensor 0x20002, period=18446744073709 la
+10-19 23:17:32.639 D/AOC     ( 1352): A3:MSG: usf_sensor.cc, 1573: USF: Received start sampling request for LSM6DSR Motion Detect (active:3).
+10-19 23:17:32.643 D/AOC     ( 1352): A3:MSG: vsc_controller.cc, 550: VSC: [Significant Motion] stopSensorEvents: sensor 0x10001
+10-19 23:17:32.643 D/AOC     ( 1352): A3:MSG: usf_sensor.cc, 1573: USF: Received start sampling request for LSM6DSR Accelerometer (active:7).
+10-19 23:17:33.755 I/Ride    ( 9651): [INFO   ] [RideService ] received GPS fix accuracy=3.0m
+10-19 23:17:33.760 I/FusedLocation( 3006): (REDACTED) location delivery to %s blocked - too close
+10-19 23:17:33.761 I/FusedLocation( 3006): (REDACTED) location delivery to %s blocked - too close
+10-19 23:17:33.761 I/FrewleTileCacheManagerV( 3899): (REDACTED) Fetched %d AP models from cache
+10-19 23:17:33.761 I/FusedLocation( 3006): (REDACTED) location delivery to %s blocked - too close
+10-19 23:17:33.761 I/FusedLocation( 3006): (REDACTED) location delivery to %s blocked - too close
+10-19 23:17:34.294 I/WifiHAL ( 1122): Creating message to get link statistics; iface = 48
+10-19 23:17:34.407 E/libbinder.IPCThreadState( 1122): binder thread pool (1 threads) starved for 112 ms
+10-19 23:17:34.779 I/FusedLocation( 3006): (REDACTED) location delivery to %s blocked - too close
+10-19 23:17:34.779 I/FusedLocation( 3006): (REDACTED) location delivery to %s blocked - too close
+10-19 23:17:34.780 I/FusedLocation( 3006): (REDACTED) location delivery to %s blocked - too close
+10-19 23:17:34.780 I/FusedLocation( 3006): (REDACTED) location delivery to %s blocked - too close
+10-19 23:17:34.781 I/FrewleTileCacheManagerV( 3899): (REDACTED) Fetched %d AP models from cache
+10-19 23:17:35.129 I/pixel-thermal( 1908): VIRTUAL-SKIN:26.6331 raw data: VIRTUAL-GNSS-BATT:24083.5 VIRTUAL-NEUTRAL-QI:21948.6 VIRTUAL-QI-DISP:26633.1 VIRTUAL-SKIN:26633.1 VIRTUAL-USB2-BATT:23759.8 battery:22700 disp_therm:24317 gnss_tcxo_therm:22467 neutral_therm:23965 qi_therm:26424 usb_pwr_therm2:23895 
+10-19 23:17:35.130 D/ImpulseStateSource( 2641): Notify clients: 1591
+10-19 23:17:35.813 I/FrewleTileCacheManagerV( 3899): (REDACTED) Fetched %d AP models from cache
+10-19 23:17:35.817 I/FusedLocation( 3006): (REDACTED) location delivery to %s blocked - too close
+10-19 23:17:35.817 I/FusedLocation( 3006): (REDACTED) location delivery to %s blocked - too close
+10-19 23:17:35.819 I/FusedLocation( 3006): (REDACTED) location delivery to %s blocked - too close
+10-19 23:17:35.820 I/FusedLocation( 3006): (REDACTED) location delivery to %s blocked - too close
+10-19 23:17:36.814 I/FusedLocation( 3006): (REDACTED) location delivery to %s blocked - too close
+10-19 23:17:36.814 I/FusedLocation( 3006): (REDACTED) location delivery to %s blocked - too close
+10-19 23:17:36.814 I/FusedLocation( 3006): (REDACTED) location delivery to %s blocked - too close
+10-19 23:17:36.815 I/FrewleTileCacheManagerV( 3899): (REDACTED) Fetched %d AP models from cache
+10-19 23:17:36.816 I/FusedLocation( 3006): (REDACTED) location delivery to %s blocked - too close
+10-19 23:17:36.831 D/AOC     ( 1352): A3:MSG: vsc_controller.cc, 532: VSC: [Step Counter] requestSensorEvents: sensor 0x20002, period=18446744073709 latency=
+10-19 23:17:36.831 D/AOC     ( 1352): A3:MSG: vsc_controller.cc, 550: VSC: [Step Counter] stopSensorEvents: sensor 0x10001
+10-19 23:17:36.831 D/AOC     ( 1352): A3:MSG: usf_sensor.cc, 1581: USF: Received stop sampling request for LSM6DSR Accelerometer (active:5).
+10-19 23:17:36.832 D/AOC     ( 1352): A3:MSG: usf_sensor_client.cc, 430: USF: Stopping stale sample stream with sampling ID: 2561
+10-19 23:17:36.832 D/AOC     ( 1352): A3:MSG: usf_sensor.cc, 1581: USF: Received stop sampling request for LSM6DSR Accelerometer (active:4).
+10-19 23:17:36.832 D/AOC     ( 1352): A3:MSG: usf_sensor.cc, 2037: USF: Sampling configuration 2561 not found.
+10-19 23:17:37.452 I/WifiHAL ( 1122): Creating message to get link statistics; iface = 48
+10-19 23:17:37.786 I/NearbyMediums( 3006): No BLE Fast/GATT advertisements found in the latest cycle.
+10-19 23:17:37.786 I/NearbyMediums( 3006): Current Tracked Scanning Clients are : {NearbyConnections.EnvironmentMonitor, NearbySharing}
+10-19 23:17:37.797 I/FrewleTileCacheManagerV( 3899): (REDACTED) Fetched %d AP models from cache
+10-19 23:17:37.797 I/FusedLocation( 3006): (REDACTED) location delivery to %s blocked - too close
+10-19 23:17:37.797 I/FusedLocation( 3006): (REDACTED) location delivery to %s blocked - too close
+10-19 23:17:37.798 I/FusedLocation( 3006): (REDACTED) location delivery to %s blocked - too close
+10-19 23:17:37.798 I/FusedLocation( 3006): (REDACTED) location delivery to %s blocked - too close
+10-19 23:17:38.809 I/FrewleTileCacheManagerV( 3899): (REDACTED) Fetched %d AP models from cache
+10-19 23:17:38.812 I/FusedLocation( 3006): (REDACTED) location delivery to %s blocked - too close
+10-19 23:17:38.812 I/FusedLocation( 3006): (REDACTED) location delivery to %s blocked - too close
+10-19 23:17:38.813 I/FusedLocation( 3006): (REDACTED) location delivery to %s blocked - too close
+10-19 23:17:38.813 I/FusedLocation( 3006): (REDACTED) location delivery to %s blocked - too close
+10-19 23:17:38.866 V/NotificationHistory( 1723): Attempted to add notif for locked/gone/disabled user 0
+10-19 23:17:38.876 I/AiAiBesties( 3948): Bestie APK is not enabled/installed or is a STUB version.
+10-19 23:17:38.877 I/AiAiEcho( 3948): SmartspaceNotificationPredictor no parser can handle this notification or notification is invalid
+10-19 23:17:38.925 I/Surface ( 2500): Creating surface for consumer unnamed-2500-343 with slotExpansion=1 for 64 slots
+10-19 23:17:38.932 E/ConsumerBase( 2500): [ImageReader-107x107f1u2816m2-2500-25] abandonLocked: ConsumerBase is abandoned!
+10-19 23:17:40.069 I/FusedLocation( 3006): (REDACTED) location delivery to %s blocked - too close
+10-19 23:17:40.069 I/FrewleTileCacheManagerV( 3899): (REDACTED) Fetched %d AP models from cache
+10-19 23:17:40.069 I/FusedLocation( 3006): (REDACTED) location delivery to %s blocked - too close
+10-19 23:17:40.070 I/FusedLocation( 3006): (REDACTED) location delivery to %s blocked - too close
+10-19 23:17:40.071 I/FusedLocation( 3006): (REDACTED) location delivery to %s blocked - too close
+10-19 23:17:40.581 I/WifiHAL ( 1122): Creating message to get link statistics; iface = 48
+10-19 23:17:40.707 E/libbinder.IPCThreadState( 1122): binder thread pool (1 threads) starved for 126 ms
+10-19 23:17:41.083 I/FusedLocation( 3006): (REDACTED) location delivery to %s blocked - too close
+10-19 23:17:41.084 I/FusedLocation( 3006): (REDACTED) location delivery to %s blocked - too close
+10-19 23:17:41.084 I/FrewleTileCacheManagerV( 3899): (REDACTED) Fetched %d AP models from cache
+10-19 23:17:41.089 I/FusedLocation( 3006): (REDACTED) location delivery to %s blocked - too close
+10-19 23:17:41.090 I/FusedLocation( 3006): (REDACTED) location delivery to %s blocked - too close
+10-19 23:17:41.513 D/DLObserver( 2500): onReceive(); android.intent.action.BATTERY_CHANGED
+10-19 23:17:41.514 D/DLObserver( 2500): plugged=2
+10-19 23:17:41.523 D/SystemEventDataSource( 2500): onReceive: android.intent.action.BATTERY_CHANGED
+10-19 23:17:41.524 D/BatteryChargingRepository( 2500): onReceive: android.intent.action.BATTERY_CHANGED
+10-19 23:17:41.524 I/ReverseChargingControl( 2500): handleIntentForReverseCharging(): rtx=0 wlc=0 plgac=0 ac=0 acrtx=0 extra=2 this=com.google.android.systemui.reversecharging.ReverseChargingController@7a2e3b
+10-19 23:17:41.524 D/PowerNotificationWarningsGoogleImpl( 2500): onReceive: android.intent.action.BATTERY_CHANGED
+10-19 23:17:41.524 D/PulsarController( 2500): dispatchIntent: android.intent.action.BATTERY_CHANGED
+10-19 23:17:41.525 D/IncompatibleChargerNotification( 2500): dispatchIntent: android.intent.action.BATTERY_CHANGED
+10-19 23:17:41.526 D/PowerUI ( 2500): can't show warning due to - plugged: true status unknown: false
+10-19 23:17:41.536 D/GoogleBatteryDataSource( 2500): fetchDwellDefendStatus: CONNECTED
+10-19 23:17:41.536 D/GoogleBatteryDataSource( 2500): fetchTempDefendStatus: t_sum=0, time_sum=0 t_avg=0 lst_v=0 lst_t=0 lst_u=0, dt=0, t=0 e=0
+10-19 23:17:41.537 D/SystemEventDataSource( 2500): updatedEventData: SystemEventData(intentAction=android.intent.action.BATTERY_CHANGED, plugged=EventData(value=2), batteryScale=EventData(value=100), batteryLevel=EventData(value=97), chargingStatus=EventData(value=4), maxChargingCurrent=EventData(value=0), maxChargingVoltage=EventData(value=0), batteryStatus=EventData(value=4), halEventData=HalEventData(dockDefendStatus=EventData(value=-3), tempDefendEventData=EventData(value=false), dwellDefendEventData=EventData(value=false)), settingsEventData=SettingsEventData(dockDefenderBypass=EventData(value=0), chargingLimitSettings=EventData(value=1), dndState=EventData(value=false), airplaneState=EventData(value=false)), frameworkApiEventData=FrameworkApiEventData(batterySaverState=EventData(value=false), extremeBatterySaverState=EventData(value=false)))
+10-19 23:17:41.537 D/SystemEventDataSource( 2500): extra doesn't changed, no need to onEventSourceUpdate
+10-19 23:17:42.066 I/FusedLocation( 3006): (REDACTED) location delivery to %s blocked - too close
+10-19 23:17:42.065 I/FrewleTileCacheManagerV( 3899): (REDACTED) Fetched %d AP models from cache
+10-19 23:17:42.067 I/FusedLocation( 3006): (REDACTED) location delivery to %s blocked - too close
+10-19 23:17:42.069 I/FusedLocation( 3006): (REDACTED) location delivery to %s blocked - too close
+10-19 23:17:42.070 I/FusedLocation( 3006): (REDACTED) location delivery to %s blocked - too close
+10-19 23:17:42.139 D/SurfaceFlinger(  700): setDesiredMode 4619827677550801152 {mode={fps=120.00 Hz, modePtr={id=2, vsyncRate=120.00 Hz, peakRefreshRate=120.00 Hz}}, emitEvent=false, force=false}
+10-19 23:17:42.141 I/DisplayDeviceRepository( 1723): Display device changed render timings: "Integrierter Bildschirm", renderFrameRate=120.00001, presentationDeadlineNanos=11500000, appVsyncOffsetNanos=6233332, frameRateOverrides=[]
+10-19 23:17:42.142 D/WindowManager( 1723): DeferredDisplayUpdater: partially applying DisplayInfo(1080 x 2340) immediately
+10-19 23:17:42.143 D/audio_hw( 1060): adev_set_parameters: enter: screen_state=on
+10-19 23:17:42.146 D/AOC     ( 1352): A3:MSG: usf_sensor.cc, 1581: USF: Received stop sampling request for LSM6DSR Motion Detect (active:0).
+10-19 23:17:42.146 D/AOC     ( 1352): A3:MSG: usf_sensor.cc, 2037: USF: Sampling configuration 2564 not found.
+10-19 23:17:42.146 D/AOC     ( 1352): A3:MSG: usf_sensor_client.cc, 161: USF: Received kErrNotFound when disabling one shot sensor.
+10-19 23:17:42.146 D/AOC     ( 1352): A3:MSG: usf_sensor.cc, 1573: USF: Received start sampling request for LSM6DSR Stationary Detect (active:1).
+10-19 23:17:42.147 D/AOC     ( 1352): A3:MSG: lsm6dsr_device.cc, 763: USF: Lsm6dsrDevice: Sensor 4: Enabled 1, odr_index 1.
+10-19 23:17:42.148 D/AOC     ( 1352): A3:MSG: lsm6dsr_fifo.cc, 750: USF: Lsm6dsrFifo: ODR: XL/G/T/TS: 104/52/13/13 WM: 3 Intr: 61.
+10-19 23:17:42.148 D/AOC     ( 1352): A3:MSG: lsm6dsr_device.cc, 249: USF: Lsm6dsrDevice: Config sampling too slow. Took 543213ns.
+10-19 23:17:42.148 D/AOC     ( 1352): A3:MSG: lsm6dsr_device.cc, 671: USF: Lsm6dsrDevice: Fifo was disabled for 543213ns.
+10-19 23:17:42.148 D/AOC     ( 1352): A3:MSG: motion_state_sensor.cc, 327: USF: MoSt: StationaryDetect sampling started with sampling ID 2570.
+10-19 23:17:42.151 I/CHRE    ( 1070): @ 45132.110: [AR] IDLE => ON
+10-19 23:17:42.153 D/AOC     ( 1352): A3:MSG: lsm6dsr_device.cc, 763: USF: Lsm6dsrDevice: Sensor 3: Enabled 0, odr_index 0.
+10-19 23:17:42.153 D/AOC     ( 1352): A3:MSG: lsm6dsr_fifo.cc, 750: USF: Lsm6dsrFifo: ODR: XL/G/T/TS: 104/52/13/13 WM: 3 Intr: 61.
+10-19 23:17:42.153 D/AOC     ( 1352): A3:MSG: lsm6dsr_device.cc, 671: USF: Lsm6dsrDevice: Fifo was disabled for 346924ns.
+10-19 23:17:42.153 D/AOC     ( 1352): A3:MSG: usf_sensor.cc, 1581: USF: Received stop sampling request for LSM6DSR Motion Detect (active:-1).
+10-19 23:17:42.154 D/AOC     ( 1352): A3:MSG: usf_sensor.cc, 2037: USF: Sampling configuration 2569 not found.
+10-19 23:17:42.154 D/AOC     ( 1352): A3:MSG: usf_sensor.cc, 1573: USF: Received start sampling request for LSM6DSR Accelerometer (active:6).
+10-19 23:17:42.154 D/AOC     ( 1352): A3:MSG: usf_sensor_client.cc, 145: USF: Received kErrNotFound when disabling one shot sensor.
+10-19 23:17:42.156 D/AOC     ( 1352): A3:MSG: vsc_controller.cc, 550: VSC: [Significant Motion] stopSensorEvents: sensor 0x20002
+10-19 23:17:42.156 D/AOC     ( 1352): A3:MSG: vsc_controller.cc, 532: VSC: [Significant Motion] requestSensorEvents: sensor 0x10001, period=20 latency=3200ms
+10-19 23:17:42.157 D/AOC     ( 1352): A3:MSG: usf_sensor.cc, 1573: USF: Received start sampling request for LSM6DSR Accelerometer (active:6).
+10-19 23:17:42.157 D/AOC     ( 1352): A3:MSG: vsc_controller.cc, 550: VSC: [Step Counter] stopSensorEvents: sensor 0x20002
+10-19 23:17:42.157 D/AOC     ( 1352): A3:MSG: vsc_controller.cc, 532: VSC: [Step Counter] requestSensorEvents: sensor 0x10001, period=20 latency=1000ms.
+10-19 23:17:42.158 D/AOC     ( 1352): A3:MSG: usf_sensor.cc, 1573: USF: Received start sampling request for LSM6DSR Accelerometer (active:6).
+10-19 23:17:42.159 D/AOC     ( 1352): A3:MSG: usf_sensor.cc, 1573: USF: Received start sampling request for LSM6DSR FreeFall Detect (active:1).
+10-19 23:17:42.160 D/AOC     ( 1352): A3:MSG: lsm6dsr_device.cc, 763: USF: Lsm6dsrDevice: Sensor 5: Enabled 1, odr_index 1.
+10-19 23:17:42.160 D/AOC     ( 1352): A3:MSG: lsm6dsr_fifo.cc, 750: USF: Lsm6dsrFifo: ODR: XL/G/T/TS: 104/52/13/13 WM: 3 Intr: 61.
+10-19 23:17:42.160 D/AOC     ( 1352): A3:MSG: lsm6dsr_device.cc, 671: USF: Lsm6dsrDevice: Fifo was disabled for 342529ns.
+10-19 23:17:42.162 D/AOC     ( 1352): A3:MSG: usf_sensor.cc, 1573: USF: Received start sampling request for LSM6DSR Stationary Detect (active:2).
+10-19 23:17:42.164 D/AOC     ( 1352): A3:MSG: usf_sensor.cc, 1581: USF: Received stop sampling request for LSM6DSR Motion Detect (active:-1).
+10-19 23:17:42.164 D/AOC     ( 1352): A3:MSG: usf_sensor.cc, 2037: USF: Sampling configuration 2565 not found.
+10-19 23:17:42.164 D/AOC     ( 1352): A3:MSG: usf_sensor_client.cc, 145: USF: Received kErrNotFound when disabling one shot sensor.
+10-19 23:17:42.221 D/AOC     ( 1352): A3:MSG: usf_sensor.cc, 1573: USF: Received start sampling request for LSM6DSR Gyroscope (active:3).
+10-19 23:17:42.222 D/AOC     ( 1352): A3:MSG: lsm6dsr_device.cc, 763: USF: Lsm6dsrDevice: Sensor 1: Enabled 1, odr_index 5.
+10-19 23:17:42.222 D/AOC     ( 1352): A3:MSG: lsm6dsr_fifo.cc, 750: USF: Lsm6dsrFifo: ODR: XL/G/T/TS: 104/208/13/26 WM: 6 Intr: 59.
+10-19 23:17:42.222 D/AOC     ( 1352): A3:MSG: lsm6dsr_device.cc, 671: USF: Lsm6dsrDevice: Fifo was disabled for 570801ns.
+10-19 23:17:42.224 D/AOC     ( 1352): A3:MSG: usf_sensor.cc, 1573: USF: Received start sampling request for Fusion Mag (active:2).
+10-19 23:17:42.224 D/AOC     ( 1352): A3:MSG: fusion_mag_sensor.cc, 672: USF: FMAG: Reconfig sampling: period(new/old) = 10/100ms, latency = 500ms.
+10-19 23:17:42.225 D/AOC     ( 1352): A3:MSG: usf_sensor.cc, 1573: USF: Received start sampling request for MMC56X3X Magnetometer 0 (active:2).
+10-19 23:17:42.225 D/AOC     ( 1352): A3:MSG: mmc56x3x_device.cc, 409: USF: MMC56X3X1: mmc56x3x_enable_measure odr = 100.
+10-19 23:17:42.225 D/AOC     ( 1352): A3:MSG: usf_sensor.cc, 1573: USF: Received start sampling request for MMC56X3X Magnetometer 1 (active:2).
+10-19 23:17:42.226 D/AOC     ( 1352): A3:MSG: mmc56x3x_device.cc, 409: USF: MMC56X3X2: mmc56x3x_enable_measure odr = 100.
+10-19 23:17:42.240 I/deeptouch( 2497): I0000 00:00:1792444662.240346    2525 tf_lite_classifier.cc:415] Event stream classified as kNone
+10-19 23:17:42.270 I/python  ( 9373): [INFO   ] [LocationProvider] stopped
+10-19 23:17:42.278 I/python  ( 9373): [INFO   ] [Database    ] finished ride 1
+10-19 23:17:42.280 W/ActivityManager( 1723): Skipping manifest association check for null package. SourceUid: 10010, SourcePkg: null, TargetUid: 10010, TargetPkg: org.cyclingtracker.cyclingtracker
+10-19 23:17:42.289 I/Process ( 9651): Sending signal. PID: 9651 SIG: 9
+10-19 23:17:42.292 I/python  ( 9373): [INFO   ] [RecordingService] foreground service stopped
+10-19 23:17:42.294 I/python  ( 9373): [INFO   ] [RideManager ] ride 1 finished
+10-19 23:17:42.316 I/ActivityManager( 1723): Process org.cyclingtracker.cyclingtracker:service_Ride (pid 9651) has died: prcp FGS 
+10-19 23:17:42.317 I/adbd    (16421): Remote process closed the socket (on MSG_PEEK)
+10-19 23:17:42.317 D/GnssAidl( 1102): Gnss::stop
+10-19 23:17:42.318 W/AlarmManager( 1723): Unrecognized alarm listener com.android.server.location.gnss.GnssLocationProvider$$ExternalSyntheticLambda13@b5e7e67
+10-19 23:17:42.319 W/AlarmManager( 1723): Unrecognized alarm listener com.android.server.location.gnss.GnssLocationProvider$$ExternalSyntheticLambda12@c696414
+10-19 23:17:42.319 I/Zygote  ( 1043): Process 9651 exited due to signal 9 (Killed)
+10-19 23:17:42.320 I/libprocessgroup( 1723): Removed cgroup /sys/fs/cgroup/apps/uid_10010/pid_9651
+10-19 23:17:43.030 D/usf_sensor_hal( 1088): accelerometer: Enter Activate. Enable = 0.
+10-19 23:17:43.030 D/AOC     ( 1352): A3:MSG: usf_sensor.cc, 1581: USF: Received stop sampling request for LSM6DSR Accelerometer (active:5).
+10-19 23:17:43.032 D/usf_sensor_hal( 1088): IMU temperature: Enter Batch. Period = 615385000, latency = 0.
+10-19 23:17:43.033 D/usf_sensor_hal( 1088): gyroscope: Enter Activate. Enable = 0.
+10-19 23:17:43.034 D/AOC     ( 1352): A3:MSG: usf_sensor.cc, 1581: USF: Received stop sampling request for LSM6DSR Gyroscope (active:2).
+10-19 23:17:43.035 D/AOC     ( 1352): A3:MSG: lsm6dsr_device.cc, 763: USF: Lsm6dsrDevice: Sensor 1: Enabled 1, odr_index 5.
+10-19 23:17:43.035 D/AOC     ( 1352): A3:MSG: lsm6dsr_fifo.cc, 750: USF: Lsm6dsrFifo: ODR: XL/G/T/TS: 104/208/13/26 WM: 6 Intr: 59.
+10-19 23:17:43.035 D/AOC     ( 1352): A3:MSG: lsm6dsr_device.cc, 671: USF: Lsm6dsrDevice: Fifo was disabled for 202148ns.
+10-19 23:17:43.036 D/usf_sensor_hal( 1088): IMU temperature: Enter Batch. Period = 615385000, latency = 20000000.
+10-19 23:17:43.036 D/AOC     ( 1352): A3:MSG: usf_sensor.cc, 2085: USF: Received reconfig sampling request for LSM6DSR Temperature.
+10-19 23:17:43.038 D/usf_sensor_hal( 1088): pressure: Enter Activate. Enable = 0.
+10-19 23:17:43.038 D/AOC     ( 1352): A3:MSG: usf_sensor.cc, 1581: USF: Received stop sampling request for ICP10101 Pressure Sensor (active:1).
+10-19 23:17:43.038 D/AOC     ( 1352): A3:MSG: icp10101_device.cc, 161: USF: ICP10101: Barometer stops sampling.
+10-19 23:17:43.039 D/AOC     ( 1352): A3:MSG: icp10101_device.cc, 147: USF: ICP10101: Barometer starts sampling: period_ns = 40000000, max_latency_ns = 10000
+10-19 23:17:43.763 I/WifiHAL ( 1122): Creating message to get link statistics; iface = 48
+10-19 23:17:43.872 E/libbinder.IPCThreadState( 1122): binder thread pool (1 threads) starved for 108 ms
+10-19 23:17:44.628 I/deeptouch( 2497): I0000 00:00:1792444664.628887    2525 tf_lite_classifier.cc:415] Event stream classified as kNone
+10-19 23:17:45.077 I/python  ( 9373): [INFO   ] [DashboardScreen] on_enter
+10-19 23:17:45.137 I/pixel-thermal( 1908): VIRTUAL-SKIN:26.6316 raw data: VIRTUAL-GNSS-BATT:24715.5 VIRTUAL-NEUTRAL-QI:21892.6 VIRTUAL-QI-DISP:26631.6 VIRTUAL-SKIN:26631.6 VIRTUAL-USB2-BATT:23758.6 battery:22700 disp_therm:24340 gnss_tcxo_therm:23731 neutral_therm:23965 qi_therm:26284 usb_pwr_therm2:23872 
+10-19 23:17:45.138 D/ImpulseStateSource( 2641): Notify clients: 1592
+10-19 23:17:46.795 D/AOC     ( 1352): A3:MSG: lsm6dsr_device.cc, 763: USF: Lsm6dsrDevice: Sensor 4: Enabled 0, odr_index 0.
+10-19 23:17:46.797 D/AOC     ( 1352): A3:MSG: lsm6dsr_fifo.cc, 750: USF: Lsm6dsrFifo: ODR: XL/G/T/TS: 104/208/13/26 WM: 6 Intr: 59.
+10-19 23:17:46.797 D/AOC     ( 1352): A3:MSG: lsm6dsr_device.cc, 671: USF: Lsm6dsrDevice: Fifo was disabled for 317627ns.
+10-19 23:17:46.799 D/AOC     ( 1352): A3:MSG: usf_sensor.cc, 1573: USF: Received start sampling request for LSM6DSR Motion Detect (active:1).
+10-19 23:17:46.799 D/AOC     ( 1352): A3:MSG: lsm6dsr_device.cc, 763: USF: Lsm6dsrDevice: Sensor 3: Enabled 1, odr_index 1.
+10-19 23:17:46.801 D/AOC     ( 1352): A3:MSG: lsm6dsr_fifo.cc, 750: USF: Lsm6dsrFifo: ODR: XL/G/T/TS: 104/208/13/26 WM: 6 Intr: 59.
+10-19 23:17:46.801 D/AOC     ( 1352): A3:MSG: lsm6dsr_device.cc, 671: USF: Lsm6dsrDevice: Fifo was disabled for 315918ns.
+10-19 23:17:46.802 D/AOC     ( 1352): A3:MSG: usf_sensor.cc, 1581: USF: Received stop sampling request for LSM6DSR Stationary Detect (active:-1).
+10-19 23:17:46.802 D/AOC     ( 1352): A3:MSG: usf_sensor.cc, 2037: USF: Sampling configuration 2570 not found.
+10-19 23:17:46.804 D/AOC     ( 1352): A3:MSG: usf_sensor_client.cc, 161: USF: Received kErrNotFound when disabling one shot sensor.
+10-19 23:17:46.805 D/AOC     ( 1352): A3:MSG: usf_sensor.cc, 1573: USF: Received start sampling request for LSM6DSR Motion Detect (active:2).
+10-19 23:17:46.805 D/AOC     ( 1352): A3:MSG: motion_state_sensor.cc, 327: USF: MoSt: MotionDetect sampling started with sampling ID 2575.
+10-19 23:17:46.805 D/AOC     ( 1352): A3:MSG: usf_sensor.cc, 1581: USF: Received stop sampling request for LSM6DSR FreeFall Detect (active:0).
+10-19 23:17:46.805 D/AOC     ( 1352): A3:MSG: lsm6dsr_device.cc, 763: USF: Lsm6dsrDevice: Sensor 5: Enabled 0, odr_index 0.
+10-19 23:17:46.805 D/AOC     ( 1352): A3:MSG: lsm6dsr_fifo.cc, 750: USF: Lsm6dsrFifo: ODR: XL/G/T/TS: 104/208/13/26 WM: 6 Intr: 59.
+10-19 23:17:46.806 D/AOC     ( 1352): A3:MSG: lsm6dsr_device.cc, 671: USF: Lsm6dsrDevice: Fifo was disabled for 315185ns.
+10-19 23:17:46.806 D/AOC     ( 1352): A3:MSG: usf_sensor.cc, 1581: USF: Received stop sampling request for LSM6DSR Stationary Detect (active:-1).
+10-19 23:17:46.806 D/AOC     ( 1352): A3:MSG: usf_sensor.cc, 2037: USF: Sampling configuration 2573 not found.
+10-19 23:17:46.806 D/AOC     ( 1352): A3:MSG: usf_sensor_client.cc, 145: USF: Received kErrNotFound when disabling one shot sensor.
+10-19 23:17:46.815 I/AppSearchIcing( 1723): icing-search-engine.cc:2649: Persisting data to disk with mode 3
+10-19 23:17:46.823 I/AppSearchIcing( 1723): icing-search-engine.cc:2664: PersistToDisk completed.
+10-19 23:17:46.828 D/BoundBrokerSvc( 3006): onUnbind: Intent { act=com.google.android.mdd.service.START dat=chimera-action:/... xflg=0x4 cmp=com.google.android.gms/.chimera.GmsApiService }
+10-19 23:17:46.832 D/BoundBrokerSvc( 3899): onUnbind: Intent { act=com.google.android.mdd.service.START dat=chimera-action:/... xflg=0x4 cmp=com.google.android.gms/.chimera.GmsApiService }
+10-19 23:17:46.835 D/BoundBrokerSvc( 3899): onUnbind: Intent { act=com.google.android.mobstore.service.START dat=chimera-action:/... xflg=0x4 cmp=com.google.android.gms/.chimera.GmsApiService }
+10-19 23:17:46.842 D/BoundBrokerSvc( 3006): onUnbind: Intent { act=com.google.android.mobstore.service.START dat=chimera-action:/... xflg=0x4 cmp=com.google.android.gms/.chimera.GmsApiService }
+10-19 23:17:46.915 I/WifiHAL ( 1122): Creating message to get link statistics; iface = 48
+10-19 23:17:46.989 D/EuiccConnector( 2808): handleMessage: E msg.what=3
+10-19 23:17:46.989 D/EuiccConnector( 2808): processMsg: ConnectedState
+10-19 23:17:47.005 I/EuiccGoogle( 3217): [2] EuiccServiceImpl.onDestroy: onDestroy: EuiccService on destroy.
+10-19 23:17:47.018 I/HidDeviceService(23141): unregisterAppUid(): uid=10150
+10-19 23:17:47.018 W/HidDeviceService(23141): unregisterAppUid(): caller UID doesn't match user UID
+10-19 23:17:47.024 D/EuiccConnector( 2808): transitionTo: destState=AvailableState
+10-19 23:17:47.024 D/EuiccConnector( 2808): handleMessage: new destination call exit/enter
+10-19 23:17:47.024 D/EuiccConnector( 2808): setupTempStateStackWithStatesToEnter: X mTempStateStackCount=2,curStateInfo: null
+10-19 23:17:47.024 D/EuiccConnector( 2808): invokeExitMethods: ConnectedState
+10-19 23:17:47.025 D/EuiccConnector( 2808): invokeExitMethods: DisconnectedState
+10-19 23:17:47.025 D/EuiccConnector( 2808): moveTempStackToStateStack: i=1,j=0
+10-19 23:17:47.025 D/EuiccConnector( 2808): moveTempStackToStateStack: i=0,j=1
+10-19 23:17:47.025 D/EuiccConnector( 2808): moveTempStackToStateStack: X mStateStackTop=1,startingIndex=0,Top=AvailableState
+10-19 23:17:47.025 D/EuiccConnector( 2808): invokeEnterMethods: UnavailableState
+10-19 23:17:47.025 D/EuiccConnector( 2808): invokeEnterMethods: AvailableState
+10-19 23:17:47.025 D/EuiccConnector( 2808): handleMessage: X
+10-19 23:17:47.287 D/AOC     ( 1352): A3:MSG: usf_sensor.cc, 1573: USF: Received start sampling request for LSM6DSR Gyroscope (active:3).
+10-19 23:17:47.287 D/AOC     ( 1352): A3:MSG: lsm6dsr_device.cc, 763: USF: Lsm6dsrDevice: Sensor 1: Enabled 1, odr_index 3.
+10-19 23:17:47.287 D/AOC     ( 1352): A3:MSG: lsm6dsr_fifo.cc, 750: USF: Lsm6dsrFifo: ODR: XL/G/T/TS: 104/52/13/13 WM: 3 Intr: 61.
+10-19 23:17:47.287 D/AOC     ( 1352): A3:MSG: lsm6dsr_device.cc, 671: USF: Lsm6dsrDevice: Fifo was disabled for 420654ns.
+10-19 23:17:47.289 D/AOC     ( 1352): A3:MSG: usf_sensor.cc, 1573: USF: Received start sampling request for Fusion Mag (active:2).
+10-19 23:17:47.289 D/AOC     ( 1352): A3:MSG: fusion_mag_sensor.cc, 672: USF: FMAG: Reconfig sampling: period(new/old) = 100/10ms, latency = 500ms.
+10-19 23:17:47.290 D/AOC     ( 1352): A3:MSG: usf_sensor.cc, 1573: USF: Received start sampling request for MMC56X3X Magnetometer 0 (active:2).
+10-19 23:17:47.290 D/AOC     ( 1352): A3:MSG: mmc56x3x_device.cc, 409: USF: MMC56X3X1: mmc56x3x_enable_measure odr = 10.
+10-19 23:17:47.291 D/AOC     ( 1352): A3:MSG: usf_sensor.cc, 1573: USF: Received start sampling request for MMC56X3X Magnetometer 1 (active:2).
+10-19 23:17:47.291 D/AOC     ( 1352): A3:MSG: mmc56x3x_device.cc, 409: USF: MMC56X3X2: mmc56x3x_enable_measure odr = 10.
+10-19 23:17:47.790 I/NearbyMediums( 3006): No BLE Fast/GATT advertisements found in the latest cycle.
+10-19 23:17:47.790 I/NearbyMediums( 3006): Current Tracked Scanning Clients are : {NearbyConnections.EnvironmentMonitor, NearbySharing}
+10-19 23:17:48.651 D/GnssAidl( 1102): Gnss::injectLocation
+10-19 23:17:50.026 I/WifiHAL ( 1122): Creating message to get link statistics; iface = 48
+10-19 23:17:50.073 D/AOC     ( 1352): A3:MSG: vsc_controller.cc, 532: VSC: [Step Counter] requestSensorEvents: sensor 0x20002, period=18446744073709 latency=
+10-19 23:17:50.074 D/AOC     ( 1352): A3:MSG: usf_sensor.cc, 1573: USF: Received start sampling request for LSM6DSR Motion Detect (active:3).
+10-19 23:17:50.074 D/AOC     ( 1352): A3:MSG: vsc_controller.cc, 550: VSC: [Step Counter] stopSensorEvents: sensor 0x10001
+10-19 23:17:50.075 D/AOC     ( 1352): A3:MSG: usf_sensor.cc, 1581: USF: Received stop sampling request for LSM6DSR Accelerometer (active:4).
+10-19 23:17:50.132 E/libbinder.IPCThreadState( 1122): binder thread pool (1 threads) starved for 105 ms
+10-19 23:17:51.807 D/AOC     ( 1352): A3:MSG: vsc_controller.cc, 532: VSC: [Significant Motion] requestSensorEvents: sensor 0x20002, period=18446744073709 la
+10-19 23:17:51.807 D/AOC     ( 1352): A3:MSG: vsc_controller.cc, 550: VSC: [Significant Motion] stopSensorEvents: sensor 0x10001
+10-19 23:17:51.807 D/AOC     ( 1352): A3:MSG: usf_sensor.cc, 1573: USF: Received start sampling request for LSM6DSR Accelerometer (active:5).
+10-19 23:17:52.050 D/InetDiagMessage( 1723): Destroyed 0 sockets, proto=IPPROTO_TCP, family=AF_INET, states=14
+10-19 23:17:52.055 D/InetDiagMessage( 1723): Destroyed 0 sockets, proto=IPPROTO_TCP, family=AF_INET6, states=14
+10-19 23:17:52.056 D/InetDiagMessage( 1723): Destroyed live tcp sockets for uids={10150} in 13ms
+10-19 23:17:52.063 D/InetDiagMessage( 1723): Destroyed 0 sockets, proto=IPPROTO_TCP, family=AF_INET, states=14
+10-19 23:17:52.070 D/InetDiagMessage( 1723): Destroyed 0 sockets, proto=IPPROTO_TCP, family=AF_INET6, states=14
+10-19 23:17:52.070 D/InetDiagMessage( 1723): Destroyed live tcp sockets for uids={20150} in 15ms
+10-19 23:17:53.177 I/WifiHAL ( 1122): Creating message to get link statistics; iface = 48

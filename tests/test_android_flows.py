@@ -7,6 +7,7 @@ from unittest import mock
 
 import pytest
 
+from cycling_tracker.screens.ride import RideScreen
 from cycling_tracker.permissions import PermissionManager
 from cycling_tracker.services.controller import RecordingServiceController
 
@@ -54,6 +55,43 @@ def test_android_start_requires_activity(monkeypatch):
         controller.start()
 
     assert not controller.running
+
+
+def test_ride_button_ignores_duplicate_rapid_activation(monkeypatch):
+    from kivy.app import App
+
+    scheduled = []
+    monkeypatch.setattr(
+        'cycling_tracker.screens.ride.Clock.schedule_once',
+        lambda callback, timeout: scheduled.append((callback, timeout)),
+    )
+    monkeypatch.setattr(
+        App,
+        'get_running_app',
+        staticmethod(lambda: SimpleNamespace(permission_manager=None)),
+    )
+    manager = SimpleNamespace(
+        state='idle',
+        start=mock.Mock(),
+        pause=mock.Mock(),
+        resume=mock.Mock(),
+    )
+    manager.start.side_effect = lambda: setattr(manager, 'state', 'recording')
+    screen = RideScreen(name='ride')
+    screen._property_callbacks = {}
+    screen.ride_manager = manager
+
+    screen.toggle_ride()
+    screen.toggle_ride()
+
+    manager.start.assert_called_once_with()
+    manager.pause.assert_not_called()
+    manager.resume.assert_not_called()
+    assert len(scheduled) == 1
+    scheduled[0][0](0)
+
+    screen.toggle_ride()
+    manager.pause.assert_called_once_with()
 
 
 def _android_modules(api_level, granted):
@@ -105,7 +143,16 @@ def test_android_13_requests_runtime_permissions_and_refreshes_status(
     manager = PermissionManager(app)
     manager.request_all()
     perms, callback = requested[0]
+    scheduled = []
+    monkeypatch.setattr(
+        'cycling_tracker.permissions.Clock.schedule_once',
+        lambda callback, _timeout=0: scheduled.append(callback),
+    )
     callback(perms, [True] * len(perms))
+
+    assert not manager.can_record
+    assert len(scheduled) == 1
+    scheduled.pop()(0)
 
     assert len(requested) == 1
     assert 'android.permission.BLUETOOTH_SCAN' in perms
@@ -142,9 +189,22 @@ def test_android_10_requests_background_location_after_foreground_grant(
     manager = PermissionManager(app)
     manager.request_all()
     foreground_permissions, callback = requested[0]
+    scheduled = []
+    monkeypatch.setattr(
+        'cycling_tracker.permissions.Clock.schedule_once',
+        lambda callback, _timeout=0: scheduled.append(callback),
+    )
     callback(foreground_permissions, [True] * len(foreground_permissions))
+
+    assert not manager.can_record
+    scheduled.pop()(0)
 
     assert len(requested) == 2
     assert requested[1][0] == manager.BG_LOCATION_PERMS
     assert manager.can_record
     assert not manager.can_record_background
+
+    background_permissions, background_callback = requested[1]
+    background_callback(background_permissions, [False])
+    assert len(scheduled) == 1
+    scheduled.pop()(0)
