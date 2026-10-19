@@ -25,6 +25,9 @@ and packaged with [Buildozer](https://buildozer.readthedocs.io/).
 - Buildozer
 - Android SDK/NDK (managed by Buildozer)
 - Java 17
+- On Debian/Ubuntu-based hosts, install Autoconf and Libtool
+  (`sudo apt install autoconf libtool`). These provide `autoreconf` and
+  `libtoolize`, which are needed when building libffi.
 
 ### Android device
 
@@ -47,7 +50,8 @@ require Android hardware.
 Run the host-side tests:
 
 ```bash
-python -m unittest discover -v
+python -m pip install -r requirements-dev.txt
+python -m pytest -v
 ```
 
 Build and run on Android:

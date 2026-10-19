@@ -1,167 +1,136 @@
 """Tests for ride lifecycle transitions and persistence."""
 
-import os
-import tempfile
-import unittest
-from unittest import mock
+from unittest.mock import Mock
 
-from cycling_tracker.models.database import Database
-from cycling_tracker.ride_manager import RideManager
+import cycling_tracker.ride_manager as ride_manager_module
 
 
-class RideManagerTests(unittest.TestCase):
-    def setUp(self):
-        self.temp_dir = tempfile.TemporaryDirectory()
-        self.db = Database(os.path.join(self.temp_dir.name, 'rides.db'))
-        self.manager = RideManager(db=self.db)
+def test_start_pause_resume_and_stop_persist_ride(
+    ride_manager, database, monkeypatch
+):
+    manager, timers = ride_manager
+    monkeypatch.setattr(
+        ride_manager_module.time,
+        'monotonic',
+        Mock(side_effect=[100, 105, 200, 203]),
+    )
+    assert manager.start()
+    ride_id = manager.ride_id
+    assert database.get_ride(ride_id)['status'] == 'active'
 
-        self.platform_patcher = mock.patch(
-            'cycling_tracker.ride_manager.platform', 'linux'
-        )
-        self.platform_patcher.start()
-        self.addCleanup(self.platform_patcher.stop)
-
-        self.location_start = mock.patch.object(self.manager.location, 'start')
-        self.location_stop = mock.patch.object(self.manager.location, 'stop')
-        self.location_start.start()
-        self.location_stop.start()
-        self.addCleanup(self.location_start.stop)
-        self.addCleanup(self.location_stop.stop)
-
-        self.timers = []
-
-        def schedule_interval(*_args):
-            timer = mock.Mock()
-            self.timers.append(timer)
-            return timer
-
-        self.clock_patcher = mock.patch(
-            'cycling_tracker.ride_manager.Clock.schedule_interval',
-            side_effect=schedule_interval,
-        )
-        self.clock_patcher.start()
-        self.addCleanup(self.clock_patcher.stop)
-        self.addCleanup(self.temp_dir.cleanup)
-        self.addCleanup(self.db.close)
-
-    def test_start_pause_resume_and_stop_persist_ride(self):
-        with mock.patch(
-            'cycling_tracker.ride_manager.time.monotonic',
-            side_effect=[100, 105, 200, 203],
-        ):
-            self.assertTrue(self.manager.start())
-            ride_id = self.manager.ride_id
-            self.assertEqual(self.db.get_ride(ride_id)['status'], 'active')
-
-            self.manager._on_location({
-                'latitude': 51.5,
-                'longitude': -0.12,
-                'altitude': 18.0,
-                'speed': 4.0,
-                'accuracy': 3.0,
-                'timestamp': '2026-10-18T19:20:00+00:00',
-            })
-            self.manager.record_heart_rate(
-                142, timestamp='2026-10-18T19:20:01+00:00'
-            )
-            self.manager.pause()
-
-            self.assertEqual(self.manager.state, 'paused')
-            self.assertEqual(self.db.get_ride(ride_id)['total_elapsed_s'], 5)
-            self.assertEqual(self.manager.sample_count, 1)
-            self.timers[0].cancel.assert_called_once_with()
-
-            self.manager.record_heart_rate(160)
-            self.assertEqual(len(self.db.get_heart_rate_samples(ride_id)), 1)
-
-            self.manager.resume()
-            self.assertEqual(self.manager.state, 'recording')
-            self.manager._on_location({
-                'latitude': 51.5001,
-                'longitude': -0.12,
-                'altitude': 19.0,
-                'speed': 5.0,
-                'accuracy': 3.0,
-                'timestamp': '2026-10-18T19:20:02+00:00',
-            })
-            self.manager.record_heart_rate(
-                145, timestamp='2026-10-18T19:20:03+00:00'
-            )
-            self.manager.stop()
-
-        ride = self.db.get_ride(ride_id)
-        self.assertEqual(self.manager.state, 'finished')
-        self.assertEqual(ride['status'], 'completed')
-        self.assertEqual(ride['total_elapsed_s'], 8)
-        self.assertGreater(ride['total_distance_m'], 0)
-        self.assertEqual(self.db.get_sample_count(ride_id), 2)
-        self.assertEqual(len(self.db.get_heart_rate_samples(ride_id)), 2)
-        self.assertEqual(self.manager.sample_count, 2)
-        self.assertEqual(len(self.timers), 2)
-        for timer in self.timers:
-            timer.cancel.assert_called_once_with()
-
-    def test_discard_removes_ride_and_clears_metrics(self):
-        self.manager.start()
-        ride_id = self.manager.ride_id
-        self.manager._on_location({
+    manager._on_location({
             'latitude': 51.5,
             'longitude': -0.12,
             'altitude': 18.0,
             'speed': 4.0,
             'accuracy': 3.0,
+            'timestamp': '2026-10-18T19:20:00+00:00',
         })
+    manager.record_heart_rate(142, timestamp='2026-10-18T19:20:01+00:00')
+    manager.pause()
 
-        self.manager.discard()
+    assert manager.state == 'paused'
+    assert database.get_ride(ride_id)['total_elapsed_s'] == 5
+    assert manager.sample_count == 1
+    timers[0].cancel.assert_called_once_with()
 
-        self.assertEqual(self.manager.state, 'idle')
-        self.assertEqual(self.manager.ride_id, 0)
-        self.assertEqual(self.manager.sample_count, 0)
-        self.assertIsNone(self.db.get_ride(ride_id))
-        self.assertEqual(self.db.get_samples(ride_id), [])
-        self.timers[0].cancel.assert_called_once_with()
+    manager.record_heart_rate(160)
+    assert len(database.get_heart_rate_samples(ride_id)) == 1
 
-    def test_flush_progress_persists_current_elapsed_time(self):
-        with mock.patch(
-            'cycling_tracker.ride_manager.time.monotonic',
-            side_effect=[100, 108],
-        ):
-            self.manager.start()
-            self.manager.flush_progress()
+    manager.resume()
+    assert manager.state == 'recording'
+    manager._on_location({
+            'latitude': 51.5001,
+            'longitude': -0.12,
+            'altitude': 19.0,
+            'speed': 5.0,
+            'accuracy': 3.0,
+            'timestamp': '2026-10-18T19:20:02+00:00',
+        })
+    manager.record_heart_rate(145, timestamp='2026-10-18T19:20:03+00:00')
+    manager.stop()
 
-        ride = self.db.get_ride(self.manager.ride_id)
-        self.assertEqual(ride['total_elapsed_s'], 8)
-
-    def test_flush_progress_does_not_overwrite_android_service_progress(self):
-        self.manager.start()
-        ride_id = self.manager.ride_id
-        self.db.update_ride_elapsed(ride_id, 12)
-
-        with mock.patch('cycling_tracker.ride_manager.platform', 'android'):
-            self.manager.flush_progress()
-
-        self.assertEqual(self.db.get_ride(ride_id)['total_elapsed_s'], 12)
-
-    def test_close_releases_ui_resources_without_finishing_ride(self):
-        self.manager.start()
-        ride_id = self.manager.ride_id
-        self.manager.service.running = True
-
-        with (
-            mock.patch('cycling_tracker.ride_manager.platform', 'android'),
-            mock.patch.object(self.manager.service, 'stop') as stop_service,
-        ):
-            self.manager.close()
-
-        self.assertIsNone(self.db._conn)
-        self.assertEqual(self.manager.state, 'recording')
-        self.timers[0].cancel.assert_called_once_with()
-        self.manager.location.stop.assert_called_once_with()
-        stop_service.assert_not_called()
-        self.assertTrue(self.manager.service.running)
-        self.db.open()
-        self.assertEqual(self.db.get_ride(ride_id)['status'], 'active')
+    ride = database.get_ride(ride_id)
+    assert manager.state == 'finished'
+    assert ride['status'] == 'completed'
+    assert ride['total_elapsed_s'] == 8
+    assert ride['total_distance_m'] > 0
+    assert database.get_sample_count(ride_id) == 2
+    assert len(database.get_heart_rate_samples(ride_id)) == 2
+    assert manager.sample_count == 2
+    assert len(timers) == 2
+    for timer in timers:
+        timer.cancel.assert_called_once_with()
 
 
-if __name__ == '__main__':
-    unittest.main()
+def test_discard_removes_ride_and_clears_metrics(ride_manager, database):
+    manager, timers = ride_manager
+    manager.start()
+    ride_id = manager.ride_id
+    manager._on_location({
+        'latitude': 51.5,
+        'longitude': -0.12,
+        'altitude': 18.0,
+        'speed': 4.0,
+        'accuracy': 3.0,
+    })
+
+    manager.discard()
+
+    assert manager.state == 'idle'
+    assert manager.ride_id == 0
+    assert manager.sample_count == 0
+    assert database.get_ride(ride_id) is None
+    assert database.get_samples(ride_id) == []
+    timers[0].cancel.assert_called_once_with()
+
+
+def test_flush_progress_persists_current_elapsed_time(
+    ride_manager, database, monkeypatch
+):
+    manager, _timers = ride_manager
+    monkeypatch.setattr(
+        ride_manager_module.time, 'monotonic', Mock(side_effect=[100, 108])
+    )
+    manager.start()
+    manager.flush_progress()
+
+    ride = database.get_ride(manager.ride_id)
+    assert ride['total_elapsed_s'] == 8
+
+
+def test_flush_progress_does_not_overwrite_android_service_progress(
+    ride_manager, database, monkeypatch
+):
+    manager, _timers = ride_manager
+    manager.start()
+    ride_id = manager.ride_id
+    database.update_ride_elapsed(ride_id, 12)
+    monkeypatch.setattr(ride_manager_module, 'platform', 'android')
+
+    manager.flush_progress()
+
+    assert database.get_ride(ride_id)['total_elapsed_s'] == 12
+
+
+def test_close_releases_ui_resources_without_finishing_ride(
+    ride_manager, database, monkeypatch
+):
+    manager, timers = ride_manager
+    manager.start()
+    ride_id = manager.ride_id
+    manager.service.running = True
+    stop_service = Mock()
+    monkeypatch.setattr(ride_manager_module, 'platform', 'android')
+    monkeypatch.setattr(manager.service, 'stop', stop_service)
+
+    manager.close()
+
+    assert database._conn is None
+    assert manager.state == 'recording'
+    timers[0].cancel.assert_called_once_with()
+    manager.location.stop.assert_called_once_with()
+    stop_service.assert_not_called()
+    assert manager.service.running
+    database.open()
+    assert database.get_ride(ride_id)['status'] == 'active'

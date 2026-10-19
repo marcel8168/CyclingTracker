@@ -1,2 +1,5 @@
 kivy==2.3.0
 buildozer==1.6.0
+pyjnius==1.7.0
+setuptools==84.0.0
+pytest>=8.0
