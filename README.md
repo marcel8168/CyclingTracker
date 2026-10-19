@@ -25,9 +25,10 @@ and packaged with [Buildozer](https://buildozer.readthedocs.io/).
 - Buildozer
 - Android SDK/NDK (managed by Buildozer)
 - Java 17
-- On Debian/Ubuntu-based hosts, install Autoconf and Libtool
-  (`sudo apt install autoconf libtool`). These provide `autoreconf` and
-  `libtoolize`, which are needed when building libffi.
+- On Debian/Ubuntu-based hosts, install the host build dependencies:
+  `sudo apt install autoconf libffi-dev libssl-dev libtool`. `libffi-dev` and
+  `libssl-dev` are needed to build the host Python `_ctypes` and SSL modules;
+  Autoconf and Libtool provide `autoreconf` and `libtoolize` for libffi.
 
 ### Android device
 
@@ -60,6 +61,10 @@ Build and run on Android:
 python -m pip install buildozer
 buildozer android debug deploy run
 ```
+
+The Buildozer configuration pins python-for-android to a Python 3.11 release;
+this is needed because Kivy 2.3.0 does not build against the Python 3.14
+headers selected by newer python-for-android revisions.
 
 On Android 10+, grant background location for uninterrupted screen-off
 recording. Android 11+ may require enabling "Allow all the time" from the

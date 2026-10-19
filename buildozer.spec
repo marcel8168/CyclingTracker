@@ -21,6 +21,10 @@ version = 0.1.0
 # (list) Application requirements
 requirements = python3,kivy==2.3.0,pyjnius,android,plyer
 
+# (str) Pin python-for-android to a Python 3.11 release compatible with Kivy 2.3.0
+p4a.branch = master
+p4a.commit = 957a3e5f8c270f7aa648ba185e5a68c1077a798d
+
 # (str) Presplash of the application (an image displayed during loading)
 #presplash.filename = %(source.dir)s/data/presplash.png
 
